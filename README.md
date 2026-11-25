@@ -5,7 +5,7 @@
 ## العب الآن
 
 - النسخة المنشورة: https://ilmrace-rr92dsty.manus.space
-- مشروع Google AI Studio: https://aistudio.google.com/apps/ac35abdb-b675-419e-b0ba-da3917701733
+- مشروع Google AI Studio (بحساب aliwalead.2007@gmail.com): https://aistudio.google.com/u/1/apps/fa5c6e11-6722-49a0-87b2-f72f7bef1f6a
 - آخر إصدار: [v1.0](https://github.com/Ali-awwww/sibaq-al-maalumat/releases/tag/v1.0) — حمّل `sibaq-al-maalumat-web.zip` وافتح `index.html`.
 
 ## طريقة اللعب
@@ -16,6 +16,7 @@
 - عند التعادل يُلعب سؤال فاصل مفاجئ حتى يحسم الفائز.
 - القدرات الخاصة (مرة في كل سباق): تخطّي سؤال صعب، تجميد الخصم 5 ثوانٍ، مضاعفة النقاط.
 - تحدٍّ يومي: 5 أسئلة جديدة كل يوم (محاولة واحدة يومياً).
+- بطولة موسمية: 3 جولات إقصائية ضد سراج وحافظ وقارئ.
 
 ## بنك الأسئلة
 
