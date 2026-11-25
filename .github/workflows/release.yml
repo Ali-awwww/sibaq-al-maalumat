@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'وسم الإصدار (مثال: v1.0)'
+        required: true
+        default: 'v1.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: جلب الكود
+        uses: actions/checkout@v4
+      - name: إعداد Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: التحقق من سلامة الكود
+        run: |
+          if [ -f app.js ]; then node --check app.js; fi
+          if [ -f build.mjs ]; then node --check build.mjs; fi
+      - name: بناء اللعبة
+        run: |
+          if [ -f package.json ]; then npm ci && npm run build; elif [ -f build.mjs ]; then node build.mjs; else mkdir -p dist && cp index.html styles.css app.js dist/ 2>/dev/null || true; fi
+          ls -la dist
+      - name: حزم اللعبة
+        run: |
+          cd dist && zip -r ../sibaq-al-maalumat-web.zip . && cd ..
+          ls -lh sibaq-al-maalumat-web.zip
+      - name: إنشاء إصدار GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: سباق المعلومات ${{ github.event.inputs.tag || github.ref_name }}
+          body: |
+            سباق المعلومات — لعبة سباق أسئلة إسلامية.
+            - سباق 10 أسئلة ضد الكمبيوتر، 15 ثانية لكل سؤال.
+            - بنك أسئلة موثّق بمصدره في 6 فئات (قرآن، سيرة، فقه، حديث، تاريخ إسلامي، عقيدة).
+            - الملف المرفق sibaq-al-maalumat-web.zip يحتوي اللعبة كاملة — افتح index.html للعب.
+          files: sibaq-al-maalumat-web.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
