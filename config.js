@@ -7,12 +7,10 @@
 //   لزر «تسجيل الدخول بـ Google» (Google Identity Services).
 // لا تضع هنا أي رابط أو مفتاح مخترع أو تجريبي؛ القيم الفارغة تعني أن
 // اللعبة تعمل بالوضع المحلي، وتظهر أوضاع الإنترنت رسالة «بانتظار بيانات Supabase».
+// يُحمَّل هذا الملف قبل app.js ويقرأه عبر window.ILMRACE_CONFIG.
 
-export const CONFIG = {
+window.ILMRACE_CONFIG = {
   SUPABASE_URL: '',
   SUPABASE_ANON_KEY: '',
   GOOGLE_CLIENT_ID: '',
 };
-
-export const SUPABASE_CONFIGURED = Boolean(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-export const GOOGLE_CONFIGURED = Boolean(CONFIG.GOOGLE_CLIENT_ID);
