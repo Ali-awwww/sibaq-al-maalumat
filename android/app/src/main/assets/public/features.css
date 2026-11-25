@@ -1,0 +1,135 @@
+/* أنماط ميزات الإصدار 1.0 — سباق المعلومات (تُحمَّل بعد styles.css) */
+
+/* زر الدخول بـ Google في الشريط العلوي */
+.google-button {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.google-button:hover { background: rgba(255, 255, 255, 0.16); }
+
+/* بطاقة تحدي اليوم صارت زراً */
+button.daily-mini {
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  width: 100%;
+  cursor: pointer;
+}
+button.daily-mini:hover { border-color: rgba(217, 164, 65, 0.6); }
+
+/* لافتة السؤال الفاصل */
+.tiebreak-banner {
+  margin: 0.6rem 0 0;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: 800;
+  color: #1a1206;
+  background: linear-gradient(90deg, #f4d47c, #d9a441);
+  box-shadow: 0 8px 24px rgba(217, 164, 65, 0.35);
+  animation: tiebreak-pulse 1.2s ease-in-out infinite;
+}
+@keyframes tiebreak-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* أزرار القدرات الخاصة */
+.booster-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: #d9a441;
+  color: #1a1206;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.booster.disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* أسئلة الترتيب */
+.order-button { position: relative; }
+.order-button .order-num {
+  margin-inline-start: auto;
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: rgba(13, 159, 116, 0.18);
+  color: #0d9f74;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.order-button.picked { border-color: #0d9f74; background: rgba(13, 159, 116, 0.12); }
+.confirm-order-button {
+  grid-column: 1 / -1;
+  border: 0;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  font-weight: 800;
+  color: #071512;
+  background: linear-gradient(90deg, #f4d47c, #d9a441);
+  cursor: pointer;
+}
+.confirm-order-button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* نافذة الملف والإنجازات */
+.profile-sheet p { margin: 0.4rem 0; line-height: 1.7; }
+.ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.8rem 0; }
+.ach-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+}
+.ach-item > span { font-size: 1.3rem; }
+.ach-item div { display: flex; flex-direction: column; flex: 1; }
+.ach-item small { opacity: 0.75; }
+.ach-item.locked { opacity: 0.55; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+.modal-secondary { margin-top: 0.6rem; }
+
+/* قوائم المصادر والصدارة */
+.source-list { display: flex; flex-direction: column; gap: 0.5rem; margin: 0.6rem 0; }
+.source-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+}
+.source-item span { opacity: 0.8; font-size: 0.9rem; }
+
+/* شرارات الإجابة الصحيحة */
+.burst-spark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f4d47c;
+  pointer-events: none;
+  animation: burst-fly 0.9s ease-out forwards;
+}
+@keyframes burst-fly {
+  from { transform: translate(0, 0) scale(1); opacity: 1; }
+  to { transform: translate(var(--bx, 0), var(--by, -80px)) scale(0.2); opacity: 0; }
+}
+
+@media (max-width: 560px) {
+  .google-button { font-size: 0.75rem; padding: 0.4rem 0.6rem; }
+  .ach-grid { grid-template-columns: 1fr; }
+}

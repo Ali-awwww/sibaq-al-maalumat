@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">سباق المعلومات</string>
+    <string name="title_activity_main">سباق المعلومات</string>
+    <string name="package_name">com.sibaqalmaalumat.app</string>
+    <string name="custom_url_scheme">com.sibaqalmaalumat.app</string>
+</resources>
