@@ -1,0 +1,33 @@
+name: Supabase setup (patch app.js + seed SQL)
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Patch app.js for Supabase
+        run: python3 tools/patch-app.py
+      - name: Generate seed SQL
+        run: node tools/generate-seed.mjs
+      - name: Check syntax
+        run: node --check app.js && node --check tools/supabase-patch.js && node --check tools/generate-seed.mjs
+      - name: Commit patched app.js and seed SQL
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app.js supabase/seed-questions.sql
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "ربط Supabase الحقيقي في app.js + بذرة أسئلة supabase/seed-questions.sql [skip ci]"
+          git push
