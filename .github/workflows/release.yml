@@ -2,6 +2,8 @@
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
+# ملاحظة: لا نستخدم android-actions/setup-android لأنه يحاول تثبيت حزمة
+# «tools» القديمة المحذوفة من مستودع SDK فيفشل؛ نستخدم SDK المثبّت مسبقاً.
 name: Release
 on:
   workflow_dispatch:
@@ -19,7 +21,14 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - name: تجهيز مكونات Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager -type f | head -n 1); fi
+          echo "Using sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - name: بناء الويب ومزامنة Capacitor
         run: |
           npm ci
