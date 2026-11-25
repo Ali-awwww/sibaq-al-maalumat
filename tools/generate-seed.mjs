@@ -14,7 +14,7 @@ function extractArray(src, marker) {
   const bi = src.indexOf('[', mi);
   const ei = src.indexOf('\n];', bi);
   if (ei < 0) throw new Error(`array end not found after ${marker}`);
-  const text = src.slice(bi, ei + 1);
+  const text = src.slice(bi, ei + 2);
   return vm.runInNewContext(text);
 }
 
