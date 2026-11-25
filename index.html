@@ -6,104 +6,161 @@
     <meta name="theme-color" content="#071512" />
     <meta name="description" content="سباق المعلومات — لعبة أسئلة إسلامية سريعة وممتعة" />
     <title>سباق المعلومات</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="features.css" />
   </head>
   <body>
     <div class="app-shell" id="appShell">
       <div class="ambient ambient-one"></div>
       <div class="ambient ambient-two"></div>
-
       <header class="topbar">
         <button class="brand" data-action="home" aria-label="العودة إلى الصفحة الرئيسية">
           <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 40 40" role="img"><path d="M20 3 34 11v18L20 37 6 29V11Z"/><path d="m12 18 8-5 8 5-8 5Z"/><path d="M20 23v9M12 18v9l8 5 8-5v-9"/></svg>
+            <svg viewBox="0 0 40 40" role="img"><path d="M20 3 34 11v18L20 37 6 29V11Z"/><path d="m12 18 8-5 8 5-8 5-8-5Z"/><path d="M20 23v9M12 18v9l8 5 8-5v-9"/></svg>
           </span>
           <span class="brand-copy"><strong>سباق المعلومات</strong><small>المعرفة أسرع مما تتوقع</small></span>
         </button>
         <div class="top-actions">
-          <div class="profile-mini">
-            <span class="mini-avatar">م</span>
-            <span><b>مؤيد</b><small>طالب علم</small></span>
-          </div>
+          <button type="button" class="google-button" data-action="google-signin">تسجيل الدخول بـ Google</button>
+          <button type="button" class="profile-mini" data-action="open-profile" aria-label="فتح ملف اللاعب">
+            <span class="mini-avatar" id="miniAvatar">م</span>
+            <span><b id="miniPlayerName">مؤيد</b><small id="miniPlayerTitle">طالب علم</small></span>
+          </button>
           <button class="icon-button" data-action="theme" aria-label="تبديل الوضع الليلي" title="تبديل الوضع الليلي">
             <svg class="icon sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
             <svg class="icon moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 14.4A8.5 8.5 0 0 1 9.6 3.7 8.5 8.5 0 1 0 20.3 14.4Z"/></svg>
           </button>
         </div>
       </header>
-
       <main>
         <section class="screen active" id="homeScreen" aria-labelledby="homeTitle">
           <div class="home-grid">
             <div class="hero-card glass-card">
               <div class="hero-copy">
-                <span class="eyebrow"><span class="live-dot"></span> الموسم الأول · تدريب محلي</span>
+                <span class="eyebrow"><span class="live-dot"></span>الموسم الأول · تدريب محلي</span>
                 <h1 id="homeTitle">كل إجابة صحيحة<br /><span>خطوة إلى الأمام.</span></h1>
                 <p>اختبر معلوماتك الإسلامية في سباق سريع ضد الكمبيوتر. أجب بثقة، راقب مضمارك، واصل إلى الراية قبل منافسك.</p>
                 <div class="hero-actions">
-                  <button class="primary-button" data-action="start-race"><span>ابدأ السباق</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
-                  <button class="ghost-button" data-action="how-to-play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 9.4a2.2 2.2 0 1 1 3.4 1.85c-.93.58-1.4 1.03-1.4 2.25M12 16.8v.1"/></svg> كيف تُلعب؟</button>
+                  <button class="primary-button" data-action="start-race"><span>ابدأ السباق</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                  <button class="ghost-button" data-action="how-to-play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7"/><path d="M12 17v.1"/></svg>كيف تُلعب؟</button>
                 </div>
               </div>
               <div class="hero-visual" aria-hidden="true">
                 <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-                <div class="hero-medal"><span class="medal-shine"></span><svg viewBox="0 0 80 80"><path d="M27 11h26l-5 18H32Z"/><path d="M20 29h40v10H20z"/><path d="M26 39h28v19H26z"/><path d="M18 58h44l-4 8H22Z"/><path d="m40 43 2.6 5.3 5.9.85-4.25 4.15 1 5.87L40 53.4l-5.25 2.77 1-5.87-4.25-4.15 5.9-.85Z"/></svg></div>
+                <div class="hero-medal"><span class="medal-shine"></span><svg viewBox="0 0 80 80"><path d="M27 11h26l-5 34a8 8 0 0 1-8 7H40a8 8 0 0 1-8-7Z"/><path d="M40 18a13 13 0 1 1 0 26 13 13 0 0 1 0-26Z"/><path d="m35 31 3.5 3.5L46 27"/></svg></div>
                 <span class="spark spark-1"></span><span class="spark spark-2"></span><span class="spark spark-3"></span>
                 <div class="hero-stat stat-top"><strong>10</strong><span>أسئلة</span></div>
                 <div class="hero-stat stat-bottom"><strong>15</strong><span>ثانية</span></div>
               </div>
             </div>
-
             <aside class="stats-card glass-card">
-              <div class="card-heading"><span>ملفك السريع</span><button class="more-button" aria-label="مزيد من الإحصائيات">•••</button></div>
-              <div class="profile-row"><div class="large-avatar">م</div><div><h2>مؤيد عبدو</h2><span class="rank-pill">طالب علم <i></i></span></div><strong class="level-number">03<small>مستوى</small></strong></div>
-              <div class="xp-row"><div><span>الخبرة</span><b id="xpValue">120 / 250 XP</b></div><div class="progress-track"><span id="xpBar" style="width:48%"></span></div></div>
-              <div class="stats-grid"><div><strong id="winsValue">7</strong><span>انتصارات</span></div><div><strong id="accuracyValue">82%</strong><span>دقة</span></div><div><strong id="streakValue">4</strong><span>تتابع</span></div></div>
-              <div class="daily-mini"><span class="daily-icon"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/><path d="m8 14 2 2 5-5"/></svg></span><div><strong>تحدي اليوم</strong><span>لم تُكمل تحدي اليوم بعد</span></div><span class="arrow-muted">‹</span></div>
+              <div class="card-heading"><span>ملفك السريع</span><button class="more-button" data-action="open-profile" aria-label="مزيد من الإحصاءات">•••</button></div>
+              <div class="profile-row"><div class="large-avatar" id="largeAvatar">م</div><div><h2 id="profilePlayerName">مؤيد عبدو</h2><span class="rank-pill" id="profilePlayerTitle">طالب علم <i></i></span></div><strong class="level-number" id="profileLevel">03<small>مستوى</small></strong></div>
+              <div class="xp-row"><div><span>الخبرة</span><b id="xpValue">120 / 250 XP</b></div><div class="progress-track"><span id="xpBar" style="width: 48%"></span></div></div>
+              <div class="stats-grid"><div><strong id="winsValue">7</strong><span>انتصارات</span></div><div><strong id="accuracyValue">82%</strong><span>دقة الإجابة</span></div><div><strong id="streakValue">4</strong><span>أفضل سلسلة</span></div></div>
+              <button type="button" class="daily-mini" data-action="start-daily"><span class="daily-icon"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/></svg></span><span id="dailyMiniText">لم تُكمل تحدي اليوم بعد</span><span class="daily-arrow">›</span></button>
             </aside>
           </div>
-
-          <div class="section-heading"><div><span class="section-kicker">اختر طريقك</span><h2>أنماط اللعب</h2></div><span class="section-note">متاح الآن: نمط التدريب</span></div>
+          <div class="section-head"><h2>اختر نمط اللعب</h2><span class="section-note">متاح الآن: التدريب والتحدي اليومي والبطولة والغرف — واللعب عبر الإنترنت بانتظار بيانات Supabase</span></div>
           <div class="mode-grid">
-            <button class="mode-card selected" data-action="start-race"><span class="mode-icon emerald"><svg viewBox="0 0 24 24"><path d="M6 19V5M6 5h11l-3 4 3 4H6"/><path d="M3 19h6"/></svg></span><span class="mode-text"><strong>تدريب ضد الكمبيوتر</strong><small>أثبت سرعتك في سباق من 10 أسئلة</small></span><span class="mode-status active-status">جاهز</span><span class="mode-arrow">‹</span></button>
-            <button class="mode-card coming" data-action="locked-mode"><span class="mode-icon blue"><svg viewBox="0 0 24 24"><path d="M4 17h16M7 17V7h10v10M9 7V5h6v2M12 11v3M9 14h6"/></svg></span><span class="mode-text"><strong>سباق سريع</strong><small>خصم حقيقي من أي مكان</small></span><span class="mode-status">قريباً</span><span class="mode-arrow">‹</span></button>
-            <button class="mode-card coming" data-action="locked-mode"><span class="mode-icon gold"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M7 7c0 3 2 5 5 5s5-2 5-5M4 7c0 4 3 7 8 7s8-3 8-7M8 21h8"/></svg></span><span class="mode-text"><strong>بطولة الموسم</strong><small>أدوار إقصائية وترتيب عالمي</small></span><span class="mode-status">قريباً</span><span class="mode-arrow">‹</span></button>
-            <button class="mode-card coming" data-action="locked-mode"><span class="mode-icon rose"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M8 3v4M16 3v4M8 12h3M13 12h3M8 16h3"/></svg></span><span class="mode-text"><strong>غرفة الأصدقاء</strong><small>ادعُ صديقك برمز خاص</small></span><span class="mode-status">قريباً</span><span class="mode-arrow">‹</span></button>
+            <article class="mode-card selected" data-action="start-race" tabindex="0" aria-label="ابدأ سباقاً سريعاً ضد الكمبيوتر">
+              <div class="mode-top"><span class="mode-icon mode-icon-one"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="mode-status ready">جاهز</span></div>
+              <h3>تدريب ضد الكمبيوتر</h3>
+              <p>سباق 10 أسئلة ضد سراج، كل سؤال 15 ثانية.</p>
+              <span class="mode-action">العب الآن <b>←</b></span>
+            </article>
+            <article class="mode-card" data-action="start-online" tabindex="0" aria-label="سباق سريع عبر الإنترنت">
+              <div class="mode-top"><span class="mode-icon mode-icon-two"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6Z"/></svg></span><span class="mode-status">مطابقة عشوائية</span></div>
+              <h3>سباق سريع عبر الإنترنت</h3>
+              <p>ابحث عن منافس عشوائي والعب ضده لحظياً (يعمل عند ربط Supabase).</p>
+              <span class="mode-action">ابحث عن منافس <b>←</b></span>
+            </article>
+            <article class="mode-card" data-action="start-tournament" tabindex="0" aria-label="بطولة الموسم">
+              <div class="mode-top"><span class="mode-icon mode-icon-three"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4"/></svg></span><span class="mode-status">3 جولات</span></div>
+              <h3>بطولة الموسم</h3>
+              <p>ثلاث جولات إقصائية ضد سراج وحافظ وقارئ — فُز بها كلها لتصبح البطل.</p>
+              <span class="mode-action">ابدأ البطولة <b>←</b></span>
+            </article>
+            <article class="mode-card" data-action="start-room" tabindex="0" aria-label="غرفة أصدقاء خاصة">
+              <div class="mode-top"><span class="mode-icon mode-icon-four"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="10" r="2.5"/><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5M14.5 20c.5-2.4 2-4 4-4.5"/></svg></span><span class="mode-status">رمز ورابط دعوة</span></div>
+              <h3>غرفة الأصدقاء</h3>
+              <p>أنشئ غرفة خاصة برمز ورابط دعوة، أو انضم إلى غرفة صديقك.</p>
+              <span class="mode-action">إنشاء / انضمام <b>←</b></span>
+            </article>
           </div>
-
-          <div class="insight-banner"><span class="insight-symbol"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.74V19h8v-3.26A7 7 0 0 0 12 3Z"/><path d="M9 22h6M9 11a3 3 0 0 1 3-3"/></svg></span><span><strong>معلومة السباق</strong><small>الإجابة الصحيحة السريعة تمنحك 10 نقاط، والإجابة الصحيحة الأبطأ تمنحك 5 نقاط.</small></span><button data-action="open-sources">المصادر المستخدمة</button></div>
+          <div class="insight-banner">
+            <div><strong>هل تعلم؟</strong><p>أول ما نزل من القرآن: ﴿اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ﴾ — سورة العلق، الآيات 1-5.</p></div>
+            <button class="ghost-button" data-action="open-sources">المصادر المستخدمة</button>
+          </div>
         </section>
-
-        <section class="screen" id="raceScreen" aria-labelledby="raceTitle" hidden>
-          <div class="race-topline"><button class="back-button" data-action="quit-race"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><span>إنهاء السباق</span></button><div class="race-title-wrap"><span class="eyebrow">تدريب محلي · سباق جديد</span><h1 id="raceTitle">السؤال <span id="questionNumber">1</span> من 10</h1></div><div class="race-top-actions"><div class="streak-chip"><svg viewBox="0 0 24 24"><path d="M12 3c3 3 5 5 5 9a5 5 0 1 1-10 0c0-1.5.6-3 2-4.4.3 2 1.3 3 2.5 3.4C12 8 12 5 12 3Z"/></svg><span id="raceStreak">0</span></div><span class="question-chip"><span id="answeredCount">0</span>/10 مكتملة</span></div></div>
+        <section class="screen race-screen" id="raceScreen" hidden aria-labelledby="raceTitle">
+          <div class="race-topline">
+            <button class="quit-button" data-action="quit-race">إنهاء السباق</button>
+            <div class="race-heading"><span class="eyebrow" id="raceEyebrow">تدريب محلي · سباق جديد</span><h1 class="race-title" id="raceTitle">السؤال <span id="questionNumber">1</span> من <span id="questionTotal">10</span></h1></div>
+            <div class="race-chips"><span class="streak-chip">🔥 <span id="raceStreak">0</span></span><span class="question-chip"><span id="answeredCount">0</span>/<span id="answeredTotal">10</span> مكتملة</span></div>
+          </div>
+          <div class="tiebreak-banner" id="tiebreakBanner" hidden>⚡ سؤال فاصل!</div>
           <div class="race-board glass-card">
-            <div class="race-board-head"><span class="category-label" id="questionCategory">القرآن</span><span class="difficulty-label" id="questionDifficulty">متوسط</span><div class="timer-wrap"><div class="timer-ring" id="timerRing"><span id="timerValue">15</span><small>ث</small></div></div></div>
+            <div class="race-board-top">
+              <div class="race-meta"><span class="category-chip" id="questionCategory">القرآن</span><span class="difficulty-chip" id="questionDifficulty">سهل</span></div>
+              <div class="timer-ring" id="timerRing"><svg class="timer-svg" viewBox="0 0 72 72" aria-hidden="true"><circle class="timer-track" cx="36" cy="36" r="32"/><circle class="timer-progress" cx="36" cy="36" r="32"/></svg><span class="timer-value" id="timerValue">15</span></div>
+            </div>
             <div class="track-area">
-              <div class="finish-flag"><span></span><b>النهاية</b></div>
-              <div class="track-lane opponent-lane"><div class="lane-label"><span class="race-avatar bot-avatar">س</span><span><b>سراج</b><small>الخصم</small></span><strong id="opponentScore">0</strong></div><div class="track-line"><span class="track-glow"></span><span class="runner opponent-runner" id="opponentRunner"><span class="runner-body"><i></i></span></span></div></div>
-              <div class="track-lane player-lane"><div class="lane-label"><span class="race-avatar player-avatar">م</span><span><b>أنت</b><small>طالب علم</small></span><strong id="playerScore">0</strong></div><div class="track-line"><span class="track-glow"></span><span class="runner player-runner" id="playerRunner"><span class="runner-body"><i></i></span></span></div></div>
-              <div class="track-ticks"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="race-lane">
+                <div class="lane-head"><span class="race-avatar bot-avatar" id="opponentAvatar">س</span><div class="lane-name"><b id="opponentName">سراج</b><small>الخصم</small></div><strong class="lane-score" id="opponentScore">0</strong></div>
+                <div class="track-line"><div class="track-glow"></div><span class="runner" id="opponentRunner">🏇</span></div>
+              </div>
+              <div class="race-lane">
+                <div class="lane-head"><span class="race-avatar player-avatar" id="playerAvatar">م</span><div class="lane-name"><b>أنت</b><small id="racePlayerTitle">طالب علم</small></div><strong class="lane-score" id="playerScore">0</strong></div>
+                <div class="track-line"><div class="track-glow"></div><span class="runner" id="playerRunner">🏇</span></div>
+              </div>
+              <div class="track-ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
             </div>
           </div>
-
-          <div class="question-card glass-card" id="questionCard">
-            <div class="question-meta"><span class="question-type" id="questionType">اختيار من متعدد</span><button class="source-button" data-action="show-question-source"><svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg> المصدر</button></div>
-            <h2 id="questionText">ما أول سورة في ترتيب المصحف؟</h2>
+          <article class="question-card glass-card" id="questionCard">
+            <div class="question-top"><span class="question-type" id="questionType">اختيار من متعدد</span><button class="source-button" data-action="show-question-source">المصدر</button></div>
+            <h2 id="questionText"></h2>
             <div class="answers-grid" id="answersGrid"></div>
-            <div class="answer-feedback" id="answerFeedback" aria-live="polite"></div>
+            <p class="answer-feedback" id="answerFeedback" role="status"></p>
+          </article>
+          <div class="race-footer">
+            <div class="booster-area"><span>تعزيزاتك <small>مرة واحدة في كل سباق</small></span><div class="booster-list"><button type="button" class="booster" id="powerSkip" data-action="use-power-skip"><span>↷</span> تخطّ <b class="booster-count" id="powerSkipCount">1</b></button><button type="button" class="booster" id="powerFreeze" data-action="use-power-freeze"><span>❄️</span> تجميد <b class="booster-count" id="powerFreezeCount">1</b></button><button type="button" class="booster" id="powerDouble" data-action="use-power-double"><span>×2</span> مضاعفة <b class="booster-count" id="powerDoubleCount">1</b></button></div></div>
+            <p class="race-tip">أجب قبل الخصم لتحصل على 10 نقاط بدلاً من 5.</p>
           </div>
-          <div class="race-footer"><div class="booster-area"><span class="booster-label">تعزيزاتك <small>المرحلة الثانية</small></span><button class="booster disabled" data-action="locked-mode"><span>↷</span> تخطّ</button><button class="booster disabled" data-action="locked-mode"><span>❄</span> تجميد</button><button class="booster disabled" data-action="locked-mode"><span>×2</span> مضاعفة</button></div><div class="race-tip"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg> السرعة تصنع الفارق</div></div>
         </section>
-
-        <section class="screen" id="resultScreen" aria-labelledby="resultTitle" hidden>
-          <div class="result-card glass-card"><div class="confetti-layer" id="confettiLayer"></div><div class="result-badge" id="resultBadge"><svg viewBox="0 0 80 80"><path d="M27 11h26l-5 18H32Z"/><path d="M20 29h40v10H20z"/><path d="M26 39h28v19H26z"/><path d="M18 58h44l-4 8H22Z"/><path d="m40 43 2.6 5.3 5.9.85-4.25 4.15 1 5.87L40 53.4l-5.25 2.77 1-5.87 5.25-2.77Z"/></svg></div><span class="eyebrow" id="resultEyebrow">نتيجة السباق</span><h1 id="resultTitle">أحسنت يا مؤيد!</h1><p id="resultSubtitle">سرعتك صنعت الفارق. واصلت حتى النهاية.</p><div class="result-score"><span>نتيجتك</span><strong id="finalScore">0</strong><small>نقطة</small></div><div class="result-stats"><div><strong id="finalCorrect">0/10</strong><span>إجابات صحيحة</span></div><div><strong id="finalAccuracy">0%</strong><span>الدقة</span></div><div><strong id="finalSpeed">0</strong><span>متوسط السرعة</span></div></div><div class="result-actions"><button class="primary-button" data-action="start-race"><span>إعادة المباراة</span><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0 1 4"/><path d="M20 5v6h-6"/></svg></button><button class="ghost-button" data-action="home">العودة للرئيسية</button></div></div>
+        <section class="screen result-screen" id="resultScreen" hidden aria-labelledby="resultTitle">
+          <article class="result-card glass-card">
+            <div class="confetti-layer" id="confettiLayer"></div>
+            <span class="result-badge">🏆</span>
+            <span class="eyebrow" id="resultEyebrow">انتصار ذهبي</span>
+            <h1 id="resultTitle">أحسنت يا مؤيد!</h1>
+            <p id="resultSubtitle">سرعتك صنعت الفارق. واصلت حتى النهاية.</p>
+            <div class="result-score"><span>النقاط</span><strong id="finalScore">0</strong></div>
+            <div class="result-stats"><div><strong id="finalCorrect">0/10</strong><span>إجابات صحيحة</span></div><div><strong id="finalAccuracy">0%</strong><span>دقة الإجابة</span></div><div><strong id="finalSpeed">—</strong><span>متوسط زمن الإجابة</span></div></div>
+            <div class="result-actions"><button class="primary-button" data-action="start-race">إعادة المباراة</button><button class="ghost-button" data-action="home">العودة للرئيسية</button></div>
+          </article>
         </section>
       </main>
-
-      <nav class="bottom-nav" aria-label="التنقل الرئيسي"><button class="nav-item active" data-action="home"><svg viewBox="0 0 24 24"><path d="m4 11 8-7 8 7v9H4z"/><path d="M9 20v-6h6v6"/></svg><span>الرئيسية</span></button><button class="nav-item" data-action="locked-mode"><svg viewBox="0 0 24 24"><path d="M4 17h16M7 17V7h10v10M9 7V5h6v2M12 11v3M9 14h6"/></svg><span>السباق</span></button><button class="nav-item nav-main" data-action="start-race"><span><svg viewBox="0 0 24 24"><path d="M12 4v16M8 8h8l-2 4 2 4H8"/></svg></span><small>ابدأ</small></button><button class="nav-item" data-action="locked-mode"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0-9-9"/><path d="M3 4v6h6"/><path d="M12 7v5l3 2"/></svg><span>الترتيب</span></button><button class="nav-item" data-action="locked-mode"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 2.8 8.5 7 10 4.2-1.5 7-5.5 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg><span>ملفي</span></button></nav>
+      <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+        <button class="nav-item active" data-action="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z"/></svg><span>الرئيسية</span></button>
+        <button class="nav-item" data-action="start-race"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4"/></svg><span>السباق</span></button>
+        <button class="nav-main" data-action="start-race" aria-label="ابدأ سباقاً جديداً"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5v13l11-6.5Z"/></svg><span>ابدأ</span></button>
+        <button class="nav-item" data-action="open-leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الترتيب</span></button>
+        <button class="nav-item" data-action="open-profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg><span>ملفي</span></button>
+      </nav>
+      <div class="toast" id="toast" role="status"><span id="toastText"></span></div>
+      <div class="modal-backdrop" id="modalBackdrop" hidden>
+        <div class="modal-card" role="dialog" aria-modal="true">
+          <button class="modal-close" data-action="close-modal" aria-label="إغلاق">×</button>
+          <div class="modal-symbol"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h2 id="modalTitle"></h2>
+          <div id="modalBody"></div>
+          <button class="primary-button modal-primary" data-action="close-modal">فهمت</button>
+        </div>
+      </div>
     </div>
-    <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-icon"></span><span id="toastText"></span></div>
-    <div class="modal-backdrop" id="modalBackdrop" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close" data-action="close-modal" aria-label="إغلاق">×</button><div class="modal-symbol" id="modalSymbol"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></div><h2 id="modalTitle">كيف تُلعب؟</h2><div id="modalBody"></div><button class="primary-button modal-primary" data-action="close-modal">فهمت</button></div></div>
-    <script type="module" src="/app.js"></script>
+    <script src="questions.js"></script>
+    <script src="config.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
