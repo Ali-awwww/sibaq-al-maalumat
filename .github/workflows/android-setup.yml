@@ -1,0 +1,126 @@
+# إعداد منصة أندرويد (Capacitor) + مخطط الرابط المخصص + إعداد التوقيع
+# يُشغَّل يدوياً مرة واحدة؛ يثبّت package.json وcapacitor.config.ts والأيقونات
+# ومجلد android/ المرقّع (توقيع الإصدار + intent-filter للمخطط sibaqalmaalumat).
+name: Android setup (Capacitor)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: إنشاء ملفات Capacitor والأيقونات
+        run: |
+          cat > package.json <<'EOF'
+          {
+            "name": "sibaq-al-maalumat",
+            "version": "1.0.0",
+            "private": true,
+            "scripts": {
+              "build": "node build.mjs",
+              "cap:sync": "npx cap sync"
+            },
+            "dependencies": {
+              "@capacitor/android": "^7.0.0",
+              "@capacitor/cli": "^7.0.0",
+              "@capacitor/core": "^7.0.0"
+            },
+            "devDependencies": {
+              "@capacitor/assets": "^3.0.0"
+            }
+          }
+          EOF
+          cat > capacitor.config.ts <<'EOF'
+          import type { CapacitorConfig } from '@capacitor/cli';
+
+          const config: CapacitorConfig = {
+            appId: 'com.sibaqalmaalumat.app',
+            appName: 'سباق المعلومات',
+            webDir: 'dist',
+          };
+
+          export default config;
+          EOF
+          mkdir -p assets
+          cat > assets/icon.svg <<'EOF'
+          <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+            <rect width="1024" height="1024" rx="220" fill="#065f46"/>
+            <rect x="36" y="36" width="952" height="952" rx="190" fill="none" stroke="#d4af37" stroke-width="14"/>
+            <circle cx="512" cy="512" r="300" fill="#d4af37"/>
+            <circle cx="640" cy="430" r="260" fill="#065f46"/>
+          </svg>
+          EOF
+          cat > assets/splash.svg <<'EOF'
+          <svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
+            <rect width="2732" height="2732" fill="#065f46"/>
+            <circle cx="1366" cy="1366" r="560" fill="#d4af37"/>
+            <circle cx="1605" cy="1213" r="485" fill="#065f46"/>
+          </svg>
+          EOF
+      - name: تثبيت الاعتماديات وبناء الويب وإضافة أندرويد
+        run: |
+          npm install
+          npm run build
+          test -d dist || (echo "dist missing" && exit 1)
+          npx cap add android
+          npx @capacitor/assets generate
+          ls android/app/src/main/res
+      - name: ترقيع التوقيع والمخطط المخصص
+        run: |
+          python3 - <<'PY'
+          import re
+          # --- android/app/build.gradle: إعداد توقيع الإصدار من متغيرات البيئة ---
+          p = 'android/app/build.gradle'
+          s = open(p, encoding='utf-8').read()
+          assert 'signingConfigs' not in s, 'signingConfigs already present'
+          anchor = '    buildTypes {'
+          assert anchor in s, 'buildTypes block not found'
+          signing = (
+              '    signingConfigs {\n'
+              '        release {\n'
+              '            storeFile file(System.getenv("KEYSTORE_FILE") ?: "sibaq-release.keystore")\n'
+              '            storePassword System.getenv("KEYSTORE_PASSWORD")\n'
+              '            keyAlias System.getenv("KEY_ALIAS")\n'
+              '            keyPassword System.getenv("KEY_PASSWORD")\n'
+              '        }\n'
+              '    }\n'
+          )
+          s = s.replace(anchor, signing + anchor, 1)
+          m = re.search(r'(buildTypes\s*\{\s*release\s*\{)', s)
+          assert m, 'release buildType not found'
+          s = s[:m.end()] + '\n                signingConfig signingConfigs.release' + s[m.end():]
+          open(p, 'w', encoding='utf-8').write(s)
+          print('build.gradle: signing patched')
+          # --- AndroidManifest.xml: intent-filter للمخطط sibaqalmaalumat ---
+          p = 'android/app/src/main/AndroidManifest.xml'
+          s = open(p, encoding='utf-8').read()
+          assert 'sibaqalmaalumat' not in s, 'deep link already present'
+          anchor = '</intent-filter>'
+          assert anchor in s, 'intent-filter not found'
+          deep_link = (
+              '\n        <intent-filter>\n'
+              '            <action android:name="android.intent.action.VIEW" />\n'
+              '            <category android:name="android.intent.category.DEFAULT" />\n'
+              '            <category android:name="android.intent.category.BROWSABLE" />\n'
+              '            <data android:scheme="sibaqalmaalumat" />\n'
+              '        </intent-filter>\n'
+          )
+          s = s.replace(anchor, anchor + deep_link, 1)
+          open(p, 'w', encoding='utf-8').write(s)
+          print('AndroidManifest.xml: deep link patched')
+          PY
+          grep -n "signingConfig signingConfigs.release" android/app/build.gradle
+          grep -n "sibaqalmaalumat" android/app/src/main/AndroidManifest.xml
+      - name: تثبيت منصة أندرويد في المستودع
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f package.json package-lock.json capacitor.config.ts assets android/
+          git status --short | head -60
+          git commit -m "أندرويد: إضافة منصة Capacitor + مخطط sibaqalmaalumat [skip ci]" || echo "nothing to commit"
+          git push
