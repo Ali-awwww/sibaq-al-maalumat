@@ -4,6 +4,7 @@
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
 # ملاحظة: لا نستخدم android-actions/setup-android لأنه يحاول تثبيت حزمة
 # «tools» القديمة المحذوفة من مستودع SDK فيفشل؛ نستخدم SDK المثبّت مسبقاً.
+# ملاحظة: مشروع أندرويد (Capacitor) يتطلب JDK 21 (source release 21).
 name: Release
 on:
   workflow_dispatch:
@@ -20,7 +21,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
       - name: تجهيز مكونات Android SDK
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
