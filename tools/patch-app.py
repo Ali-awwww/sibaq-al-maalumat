@@ -58,7 +58,7 @@ def main():
 
     # 1) إدراج كتلة Supabase بعد سطر GOOGLE_CONFIGURED
     block = section(patch, 'SUPABASE_BLOCK')
-    anchor = 'const GOOGLE_CONFIGURED = Boolean(ILMRACE_CONFIG.GOOGLE_CLIENT_ID);'
+    anchor = 'const GOOGLE_CONFIGURED = Boolean(SIBAQ_CONFIG.GOOGLE_CLIENT_ID);'
     src = replace_once(src, anchor, anchor + '\n\n' + block.rstrip('\n') + '\n', 'supabase block insert')
 
     # 2) استبدال networkAdapter بالكامل بالتنفيذ الحقيقي
