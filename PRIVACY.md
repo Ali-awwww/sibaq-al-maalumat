@@ -17,4 +17,4 @@
 ## التواصل
 لأي سؤال حول هذه السياسة، راسلنا على: developerabumuadh@gmail.com
 
-رابط اللعبة: https://ilmrace-rr92dsty.manus.space
+رابط اللعبة: https://ali-awwww.github.io/sibaq-al-maalumat/
