@@ -13,7 +13,7 @@
 - مشروع Google AI Studio (بحساب aliwalead.2007@gmail.com): https://aistudio.google.com/u/1/apps/fa5c6e11-6722-49a0-87b2-f72f7bef1f6a
 - الإصدار: https://github.com/Ali-awwww/sibaq-al-maalumat/releases/tag/v1.0
 - رابط تحميل APK المباشر: https://github.com/Ali-awwww/sibaq-al-maalumat/releases/download/v1.0/sibaq-al-maalumat-v1.0.apk
-- اللعبة المنشورة: https://ilmrace-rr92dsty.manus.space
+- اللعبة المنشورة: https://ali-awwww.github.io/sibaq-al-maalumat/
 - المعرض: https://apps-showcase.pages.dev (يُتحقق من ظهور اللعبة فيه بعد الإصدار)
 
 
@@ -41,7 +41,7 @@
 - كود الربط في `app.js` (عبر `tools/supabase-patch.js` و`tools/patch-app.py`): استيراد ديناميكي لمكتبة supabase-js، استعادة الجلسة و`onAuthStateChange`، upsert للملف في `profiles`، دخول Google عبر `signInWithOAuth` مع `redirectTo = location.origin + location.pathname`، إنشاء/انضمام غرف، مطابقة عشوائية، أسئلة مشتركة مبذورة، دفع النتيجة بعد كل إجابة، واشتراكات Realtime.
 - الجداول (مخطط `public`، مع RLS مفعّل على كلها): `profiles` و`rooms` و`matches` و`questions` و`results` وعرض `leaderboard`. Realtime مفعّل على `rooms` و`matches` و`results`، و12 سياسة RLS تسمح بتدفق المطابقة (إنشاء الغرفة للمضيف، إنشاء المباراة لأحد اللاعبين، تحديث نتيجة المباراة لأي لاعب، إدخال النتيجة الخاصة، وأسئلة للقراءة فقط).
 - جدول `questions` يحوي **100 سؤال** (نفس بنك اللعبة) — تحقّق بالاستعلام: `count = 100`، التوزيع: القرآن 22، السيرة 20، الفقه 17، الحديث 15، التاريخ 13، العقيدة 13؛ و5 أسئلة يومية (`is_daily = true`).
-- إعدادات Auth: Site URL هو النطاق المنشور https://ilmrace-rr92dsty.manus.space، و4 روابط إعادة توجيه (النطاق و`/**` وhttp://localhost:3000 و`/**`).
+- إعدادات Auth: Site URL هو النطاق المنشور https://ali-awwww.github.io/sibaq-al-maalumat/، و4 روابط إعادة توجيه (النطاق و`/**` وhttp://localhost:3000 و`/**`).
 - المصادقة: Google (Gmail) فقط؛ تطبيق OAuth في Google Cloud ما زال في حالة Testing (مستخدما الاختبار: developerabumuadh@gmail.com وxman88371@gmail.com) — يُنشر من صفحة Audience بعد توفر رابطي الصفحة الرئيسية وسياسة الخصوصية.
 
 
@@ -84,7 +84,6 @@
 - `config.js`: إعدادات الربط (رابط Supabase والمفتاح العام).
 - `build.mjs`: بناء نسخة `dist/` الثابتة.
 - `server.mjs`: خادم المعاينة.
-- `public/manus-routes.json`: بيان المسارات.
 - `tools/supabase-patch.js` و`tools/patch-app.py` و`tools/generate-seed.mjs`: أدوات ربط Supabase وتوليد بذرة الأسئلة.
 - `supabase/seed-questions.sql`: بذرة الأسئلة المئة لجدول `questions`.
 - `capacitor.config.ts` و`package.json` و`assets/`: إعدادات Capacitor والأيقونات.
