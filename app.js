@@ -1537,13 +1537,13 @@ function drawResultCanvas() {
   ctx.font = 'bold 64px Cairo, "Segoe UI", sans-serif';
   ctx.fillText(state.opponentScore + ' نقطة', 400, 575);
   // تفاصيل السباق
-  const raceTotal = state.raceTotalQuestions || 10;
-  const correct = state.raceCorrect || 0;
+  const raceTotal = state.raceTotal || 10;
+  const correct = state.correct || 0;
   const accuracy = Math.round((correct / raceTotal) * 100);
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '28px Cairo, "Segoe UI", sans-serif';
   ctx.fillText('عدد الأسئلة: ' + raceTotal + ' | إجابات صحيحة: ' + correct, 400, 650);
-  ctx.fillText('أفضل سلسلة: ' + (state.bestStreak || 0) + ' | نسبة الدقة: ' + accuracy + '%', 400, 695);
+  ctx.fillText('أفضل سلسلة: ' + (profile.bestStreak || 0) + ' | نسبة الدقة: ' + accuracy + '%', 400, 695);
   // تذييل
   ctx.fillStyle = '#FFD700';
   ctx.font = 'bold 30px Cairo, "Segoe UI", sans-serif';
