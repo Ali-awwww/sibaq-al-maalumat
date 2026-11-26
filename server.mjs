@@ -22,9 +22,7 @@ const server = createServer(async (req, res) => {
     const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
     const requestedFile = requestPath === '/'
       ? 'index.html'
-      : requestPath === '/manus-routes.json'
-        ? 'public/manus-routes.json'
-        : requestPath.replace(/^\//, '');
+      : requestPath.replace(/^\//, '');
     const safePath = normalize(requestedFile);
     if (isAbsolute(safePath) || safePath === '..' || safePath.startsWith(`..${'/'}`) || safePath.startsWith(`..${'\\'}`)) {
       res.writeHead(403); res.end('Forbidden'); return;
