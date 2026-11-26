@@ -1071,7 +1071,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.4', 'Knowledge Race · v1.4');
+    verFooter.textContent = tr('سباق المعلومات · v1.4.2', 'Knowledge Race · v1.4.2');
   }
   updateHomeStats();
   applyKidsMode();
@@ -4218,7 +4218,7 @@ function openProfile() {
   }).join('');
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p><p>${tr('النقاط', 'XP')}: ${profile.xp} XP · ${tr('السباقات', 'Races')}: ${profile.games} · ${tr('الانتصارات', 'Wins')}: ${profile.wins} · ${tr('أفضل سلسلة', 'Best Streak')}: ${profile.bestStreak}</p>${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.4.1', 'Version v1.4.1')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p><p>${tr('النقاط', 'XP')}: ${profile.xp} XP · ${tr('السباقات', 'Races')}: ${profile.games} · ${tr('الانتصارات', 'Wins')}: ${profile.wins} · ${tr('أفضل سلسلة', 'Best Streak')}: ${profile.bestStreak}</p>${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.4.2', 'Version v1.4.2')}</small></p></div>`,
     'info',
   );
 }
