@@ -4,7 +4,7 @@
 
 ## العب الآن
 
-- النسخة المنشورة: https://ilmrace-rr92dsty.manus.space
+- النسخة المنشورة: https://ali-awwww.github.io/sibaq-al-maalumat/
 - مشروع Google AI Studio (بحساب aliwalead.2007@gmail.com): https://aistudio.google.com/u/1/apps/fa5c6e11-6722-49a0-87b2-f72f7bef1f6a
 - آخر إصدار: [v1.0](https://github.com/Ali-awwww/sibaq-al-maalumat/releases/tag/v1.0) — حمّل `sibaq-al-maalumat-web.zip` وافتح `index.html`.
 
