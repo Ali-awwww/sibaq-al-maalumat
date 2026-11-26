@@ -1479,3 +1479,127 @@ function boot() {
 
 window.sibaqDebug = { questionBank: QUESTION_BANK, state, validateQuestionBank, network: networkAdapter };
 boot();
+
+// ===== مشاركة النتيجة كصورة (v1.3) =====
+// رسم صورة النتيجة لمشاركتها (Canvas 2D فقط — يعمل دون إنترنت وداخل غلاف Capacitor)
+function drawResultCanvas() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800;
+  canvas.height = 1000;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  const playerWon = state.playerProgress > state.opponentProgress || (state.playerProgress === state.opponentProgress && state.playerScore >= state.opponentScore);
+  const isTie = state.playerProgress === state.opponentProgress && state.playerScore === state.opponentScore;
+  const title = isTie ? '🤝 تعادل في سباق المعلومات' : playerWon ? '🏆 فزت في سباق المعلومات!' : '🥈 خسرت في سباق المعلومات';
+  // خلفية اللعبة: تدرج أخضر داكن مع إطار ذهبي
+  const bg = ctx.createLinearGradient(0, 0, 800, 1000);
+  bg.addColorStop(0, '#0B3D2E');
+  bg.addColorStop(1, '#07231B');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, 800, 1000);
+  ctx.strokeStyle = '#B88918';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(20, 20, 760, 960);
+  ctx.strokeStyle = 'rgba(184, 137, 24, 0.45)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(38, 38, 724, 924);
+  // زخارف
+  ctx.font = 'bold 36px Cairo, "Segoe UI", sans-serif';
+  ctx.fillStyle = '#FFD700';
+  ctx.textAlign = 'center';
+  ctx.fillText('✨ سباق المعلومات الإسلامي ✨', 400, 110);
+  ctx.font = 'bold 44px Cairo, "Segoe UI", sans-serif';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(title, 400, 190);
+  // بطاقة النتيجة
+  ctx.fillStyle = 'rgba(13, 78, 60, 0.9)';
+  ctx.fillRect(70, 230, 660, 480);
+  ctx.strokeStyle = '#B88918';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(70, 230, 660, 480);
+  // اللاعب الأول: أنت
+  const playerName = (window.profile && profile.name) || 'الباحث';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 40px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText(playerName, 400, 300);
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 64px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText(state.playerScore + ' نقطة', 400, 375);
+  // فاصل
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 30px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText('— ضد —', 400, 435);
+  // اللاعب الثاني
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 40px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText(state.opponentName || 'المنافس', 400, 500);
+  ctx.fillStyle = '#00E5FF';
+  ctx.font = 'bold 64px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText(state.opponentScore + ' نقطة', 400, 575);
+  // تفاصيل السباق
+  const raceTotal = state.raceTotalQuestions || 10;
+  const correct = state.raceCorrect || 0;
+  const accuracy = Math.round((correct / raceTotal) * 100);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '28px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText('عدد الأسئلة: ' + raceTotal + ' | إجابات صحيحة: ' + correct, 400, 650);
+  ctx.fillText('أفضل سلسلة: ' + (state.bestStreak || 0) + ' | نسبة الدقة: ' + accuracy + '%', 400, 695);
+  // تذييل
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 30px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText('سباق المعلومات الإسلامي', 400, 810);
+  ctx.fillStyle = '#CCCCCC';
+  ctx.font = '24px Cairo, "Segoe UI", sans-serif';
+  ctx.fillText(new Date().toLocaleDateString('ar-SA'), 400, 855);
+  return canvas;
+}
+
+async function shareResultImage() {
+  try {
+    const canvas = drawResultCanvas();
+    if (!canvas) {
+      showToast('تعذر إنشاء صورة النتيجة');
+      return;
+    }
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) {
+      showToast('تعذر إنشاء صورة النتيجة');
+      return;
+    }
+    const file = new File([blob], 'sibaq-result.png', { type: 'image/png' });
+    const shareData = { files: [file], title: 'نتيجة سباق المعلومات الإسلامي', text: '🏆 حققت ' + state.playerScore + ' نقطة في سباق المعلومات الإسلامي' };
+    if (navigator.canShare && navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+      showToast('تمت مشاركة النتيجة بنجاح');
+      return;
+    }
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      showToast('تم إلغاء المشاركة');
+      return;
+    }
+    console.warn('Share error:', err);
+  }
+  // Fallback: automatic download
+  try {
+    const canvas = drawResultCanvas();
+    const url = URL.createObjectURL(await new Promise((resolve) => canvas.toBlob(resolve, 'image/png')));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sibaq-result.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('تم تحميل صورة النتيجة (sibaq-result.png)');
+  } catch (err) {
+    console.error('Share result failed', err);
+    showToast('تعذر مشاركة النتيجة، حاول مرة أخرى');
+  }
+}
+
+// ربط زر «شارك النتيجة» (تفويض على مستوى المستند ليعمل حتى بعد إعادة رسم شاشة النتيجة)
+document.addEventListener('click', (e) => {
+  const btn = e.target && e.target.closest ? e.target.closest('#shareResultBtn') : null;
+  if (btn) shareResultImage();
+});
