@@ -9,6 +9,5 @@ await Promise.all([
   cp('app.js', 'dist/app.js'),
   cp('questions.js', 'dist/questions.js'),
   cp('config.js', 'dist/config.js'),
-  cp('public/manus-routes.json', 'dist/manus-routes.json'),
-]);
+])  ;
 console.log('Static build ready in dist/');
