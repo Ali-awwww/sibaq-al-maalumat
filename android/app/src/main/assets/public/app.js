@@ -2,9 +2,14 @@
 // بنك الأسئلة: 36 سؤالاً أساسياً في هذا الملف + 64 سؤالاً في questions.js = 100 سؤال موثّق بمصدره.
 // يُحمَّل questions.js وconfig.js قبل هذا الملف (سكربتات عادية) ويقرأهما عبر window.
 const EXTRA_QUESTIONS = window.EXTRA_QUESTIONS || [];
-const ILMRACE_CONFIG = window.ILMRACE_CONFIG || {};
-const SUPABASE_CONFIGURED = Boolean(ILMRACE_CONFIG.SUPABASE_URL && ILMRACE_CONFIG.SUPABASE_ANON_KEY);
-const GOOGLE_CONFIGURED = Boolean(ILMRACE_CONFIG.GOOGLE_CLIENT_ID);
+const SIBAQ_CONFIG = window.SIBAQ_CONFIG || {};
+const SUPABASE_CONFIGURED = Boolean(SIBAQ_CONFIG.SUPABASE_URL && SIBAQ_CONFIG.SUPABASE_ANON_KEY);
+const GOOGLE_CONFIGURED = Boolean(SIBAQ_CONFIG.GOOGLE_CLIENT_ID);
+// Migrate legacy ilmrace storage keys to the new sibaq keys on first run, so existing players keep their profile and settings.
+function migrateLegacyKey(s, k, o) { try { if (s.getItem(k) === null) { const v = s.getItem(o); if (v !== null) s.setItem(k, v); } } catch (e) {} }
+migrateLegacyKey(localStorage, 'sibaq-profile-v1', 'ilmrace-profile-v1');
+migrateLegacyKey(localStorage, 'sibaq-theme', 'ilmrace-theme');
+migrateLegacyKey(sessionStorage, 'sibaq-pending-action', 'ilmrace-pending-action');
 
 // ── ربط Supabase الحقيقي ──────────────────────────────────────────────
 // مشروع Supabase «sibaq-al-maalumat» (eu-west-1) — الرابط والمفتاح العام
@@ -25,7 +30,7 @@ function getSupabaseClient() {
   if (!supabaseClientPromise) {
     supabaseClientPromise = import(SUPABASE_JS_URL)
       .then((mod) => {
-        supabaseClient = mod.createClient(ILMRACE_CONFIG.SUPABASE_URL, ILMRACE_CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+        supabaseClient = mod.createClient(SIBAQ_CONFIG.SUPABASE_URL, SIBAQ_CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
         return supabaseClient;
       })
       .catch((error) => { console.warn('تعذّر تحميل مكتبة Supabase', error); return null; });
@@ -56,7 +61,7 @@ async function refreshSupabaseSession() {
 
 async function resumePendingSupabaseAction() {
   let pending = null;
-  try { pending = sessionStorage.getItem('ilmrace-pending-action'); sessionStorage.removeItem('ilmrace-pending-action'); } catch (error) { /* no storage */ }
+  try { pending = sessionStorage.getItem('sibaq-pending-action'); sessionStorage.removeItem('sibaq-pending-action'); } catch (error) { /* no storage */ }
   if (!pending || !supabaseUser) return;
   if (pending === 'random') openOnlineQuick();
   else if (pending === 'room') openRoom();
@@ -90,7 +95,7 @@ async function ensureSupabaseSignedIn(pendingAction) {
   if (supabaseUser) return true;
   const go = await openConfirm('🔐 الدخول بـ Google مطلوب', '<p>أوضاع الإنترنت (المطابقة والغرف والتحدي اليومي) تتطلب تسجيل الدخول بـ Google (Gmail فقط) عبر Supabase.</p>', 'تسجيل الدخول بـ Google', 'لاحقاً');
   if (go !== true) return false;
-  try { if (pendingAction) sessionStorage.setItem('ilmrace-pending-action', pendingAction); } catch (error) { /* no storage */ }
+  try { if (pendingAction) sessionStorage.setItem('sibaq-pending-action', pendingAction); } catch (error) { /* no storage */ }
   await signInWithGoogleSupabase();
   return false;
 }
@@ -285,7 +290,7 @@ function recordOnlineResult() {
   }
 }
 
-window.ilmraceSupabase = {
+window.sibaqSupabase = {
   getClient: getSupabaseClient,
   refreshSession: refreshSupabaseSession,
   signInWithGoogle: signInWithGoogleSupabase,
@@ -345,10 +350,10 @@ const BASE_QUESTIONS = [
 
 const QUESTION_BANK = [...BASE_QUESTIONS, ...EXTRA_QUESTIONS];
 
-const STORAGE_KEY = 'ilmrace-profile-v1';
-const HISTORY_KEY = 'ilmrace-history-v1';
-const DAILY_KEY = 'ilmrace-daily-v1';
-const ROOMS_KEY = 'ilmrace-rooms-v1';
+const STORAGE_KEY = 'sibaq-profile-v1';
+const HISTORY_KEY = 'sibaq-history-v1';
+const DAILY_KEY = 'sibaq-daily-v1';
+const ROOMS_KEY = 'sibaq-rooms-v1';
 
 const TITLES = [
   { min: 0, title: 'طالب علم' },
@@ -474,7 +479,7 @@ const networkAdapter = {
     return sbSubscribeToMatch(onOpponent);
   },
 };
-window.ilmraceNetwork = networkAdapter;
+window.sibaqNetwork = networkAdapter;
 let profile = loadProfile();
 let confirmResolver = null;
 
@@ -1367,7 +1372,7 @@ async function openGoogleSignIn() {
   }
   openModal('تسجيل الدخول بـ Google', '<p>سجّل الدخول بحساب Google الخاص بك:</p><div id="gsiButton"></div>', 'info');
   loadGsi().then(() => {
-    window.google.accounts.id.initialize({ client_id: ILMRACE_CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
+    window.google.accounts.id.initialize({ client_id: SIBAQ_CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
     window.google.accounts.id.renderButton(document.getElementById('gsiButton'), { theme: 'outline', size: 'large', width: 280 });
   }).catch(() => showToast('تعذّر تحميل خدمة Google'));
 }
@@ -1402,7 +1407,7 @@ function burstSparkles() {
 function toggleTheme() {
   const next = ui.shell.dataset.theme === 'light' ? 'dark' : 'light';
   ui.shell.dataset.theme = next;
-  localStorage.setItem('ilmrace-theme', next);
+  localStorage.setItem('sibaq-theme', next);
   showToast(next === 'light' ? 'تم تفعيل الوضع الفاتح' : 'تم تفعيل الوضع الليلي');
 }
 
@@ -1456,7 +1461,7 @@ function boot() {
   validateQuestionBank();
   refreshSupabaseSession();
   mergeRemoteQuestions();
-  const savedTheme = localStorage.getItem('ilmrace-theme');
+  const savedTheme = localStorage.getItem('sibaq-theme');
   ui.shell.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
   updateHomeStats();
   bindEvents();
@@ -1472,5 +1477,5 @@ function boot() {
   console.info(`سباق المعلومات جاهز — ${QUESTION_BANK.length} سؤالاً موثّقاً. حالة الشبكة: ${networkAdapter.status()}`);
 }
 
-window.ilmraceDebug = { questionBank: QUESTION_BANK, state, validateQuestionBank, network: networkAdapter };
+window.sibaqDebug = { questionBank: QUESTION_BANK, state, validateQuestionBank, network: networkAdapter };
 boot();
