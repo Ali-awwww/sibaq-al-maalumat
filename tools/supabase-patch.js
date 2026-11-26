@@ -22,7 +22,7 @@ function getSupabaseClient() {
   if (!supabaseClientPromise) {
     supabaseClientPromise = import(SUPABASE_JS_URL)
       .then((mod) => {
-        supabaseClient = mod.createClient(ILMRACE_CONFIG.SUPABASE_URL, ILMRACE_CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+        supabaseClient = mod.createClient(SIBAQ_CONFIG.SUPABASE_URL, SIBAQ_CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
         return supabaseClient;
       })
       .catch((error) => { console.warn('تعذّر تحميل مكتبة Supabase', error); return null; });
@@ -53,7 +53,7 @@ async function refreshSupabaseSession() {
 
 async function resumePendingSupabaseAction() {
   let pending = null;
-  try { pending = sessionStorage.getItem('ilmrace-pending-action'); sessionStorage.removeItem('ilmrace-pending-action'); } catch (error) { /* no storage */ }
+  try { pending = sessionStorage.getItem('sibaq-pending-action'); sessionStorage.removeItem('sibaq-pending-action'); } catch (error) { /* no storage */ }
   if (!pending || !supabaseUser) return;
   if (pending === 'random') openOnlineQuick();
   else if (pending === 'room') openRoom();
@@ -87,7 +87,7 @@ async function ensureSupabaseSignedIn(pendingAction) {
   if (supabaseUser) return true;
   const go = await openConfirm('🔐 الدخول بـ Google مطلوب', '<p>أوضاع الإنترنت (المطابقة والغرف والتحدي اليومي) تتطلب تسجيل الدخول بـ Google (Gmail فقط) عبر Supabase.</p>', 'تسجيل الدخول بـ Google', 'لاحقاً');
   if (go !== true) return false;
-  try { if (pendingAction) sessionStorage.setItem('ilmrace-pending-action', pendingAction); } catch (error) { /* no storage */ }
+  try { if (pendingAction) sessionStorage.setItem('sibaq-pending-action', pendingAction); } catch (error) { /* no storage */ }
   await signInWithGoogleSupabase();
   return false;
 }
@@ -282,7 +282,7 @@ function recordOnlineResult() {
   }
 }
 
-window.ilmraceSupabase = {
+window.sibaqSupabase = {
   getClient: getSupabaseClient,
   refreshSession: refreshSupabaseSession,
   signInWithGoogle: signInWithGoogleSupabase,
@@ -323,7 +323,7 @@ const networkAdapter = {
     return sbSubscribeToMatch(onOpponent);
   },
 };
-window.ilmraceNetwork = networkAdapter;
+window.sibaqNetwork = networkAdapter;
 
 // ===== SECTION: OPEN_ONLINE_QUICK =====
 async function openOnlineQuick() {
@@ -480,7 +480,7 @@ async function openGoogleSignIn() {
   }
   openModal('تسجيل الدخول بـ Google', '<p>سجّل الدخول بحساب Google الخاص بك:</p><div id="gsiButton"></div>', 'info');
   loadGsi().then(() => {
-    window.google.accounts.id.initialize({ client_id: ILMRACE_CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
+    window.google.accounts.id.initialize({ client_id: SIBAQ_CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
     window.google.accounts.id.renderButton(document.getElementById('gsiButton'), { theme: 'outline', size: 'large', width: 280 });
   }).catch(() => showToast('تعذّر تحميل خدمة Google'));
 }
