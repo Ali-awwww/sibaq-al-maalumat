@@ -1,4 +1,4 @@
-# إصدار v1.2: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.3: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -73,25 +73,25 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.2.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.3.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.2.apk
-          ls -lh sibaq-al-maalumat-v1.2.apk sibaq-al-maalumat-web-v1.2.zip
-      - name: نشر Release v1.2
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.3.apk
+          ls -lh sibaq-al-maalumat-v1.3.apk sibaq-al-maalumat-web-v1.3.zip
+      - name: نشر Release v1.3
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          سباق المعلومات v1.2 — إصدار محدَّث من لعبة سباق الأسئلة الإسلامية الموثّقة. جديد في هذا الإصدار: زر «تطبيقاتنا» في الملف الشخصي يفتح معرض التطبيقات في المتصفح الخارجي.
-
+        سباق المعلومات v1.3 — إصدار محدَّث من لعبة سباق الأسئلة الإسلامية الموثّقة. جديد في هذا الإصدار: زر «شارك النتيجة» لمشاركة نتيجة السباق كصورة.
           - سباق 10 أسئلة ضد الكمبيوتر (15 ثانية لكل سؤال)، مع قدرات خاصة (تخطّي، تجميد الخصم، مضاعفة النقاط) وسؤال فاصل عند التعادل.
           - بنك 100 سؤال موثّق بمصدره في 6 فئات (قرآن، سيرة، فقه، حديث، تاريخ إسلامي، عقيدة).
           - أوضاع أونلاين عبر Supabase Realtime: مطابقة عشوائية، غرف أصدقاء برابط/رمز، تحدٍّ يومي، بطولات.
           - تقدّم وألقاب وإنجازات ولوحة صدارة، ودخول Google (Gmail) فقط.
           - تطبيق أندرويد (com.sibaqalmaalumat.app) موقّع بشهادة الإصدار الجديدة، ويفتح عبر المخطط sibaqalmaalumat:// من زر «افتح التطبيق» في المعرض.
-          - الملف المرفق sibaq-al-maalumat-web-v1.2.zip يحتوي نسخة الويب كاملة — افتح index.html للعب.
+          - الملف المرفق sibaq-al-maalumat-web-v1.3.zip يحتوي نسخة الويب كاملة — افتح index.html للعب.
           EOF
-          gh release create v1.2 \
-            --title "سباق المعلومات v1.2" \
+          gh release create v1.3 \
+            --title "سباق المعلومات v1.3" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.2.apk sibaq-al-maalumat-web-v1.2.zip
+            sibaq-al-maalumat-v1.3.apk sibaq-al-maalumat-web-v1.3.zip
+            
