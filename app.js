@@ -1312,7 +1312,7 @@ async function openLeaderboard() {
     : '<p>لا لاعبين بعد في الصدارة العالمية — كُن أولهم!</p>';
   openModal('🏆 لوحة الصدارة العالمية', `<div class="source-list">${rows}</div><p>مرتبة حسب النقاط والانتصارات من جدول profiles عبر Supabase.</p>`, 'info');
 }
-function openProfile() {
+/* يفتح معرض تطبيقاتنا في المتصفح الخارجي، لا داخل WebView، حتى تعمل أزرار فتح التطبيقات في المعرض. */ function openOurApps() { window.open('https://apps-showcase.pages.dev', '_blank', 'noopener,noreferrer'); } function openProfile() {
   const title = titleFor(profile.xp);
   const level = Math.floor(profile.xp / 250) + 1;
   const achievements = (profile.achievements || []);
@@ -1320,7 +1320,7 @@ function openProfile() {
     const unlocked = achievements.includes(a.id);
     return `<div class="ach-item ${unlocked ? 'unlocked' : 'locked'}"><span>${a.icon}</span><div><strong>${a.title}</strong><small>${a.desc}</small></div><b>${unlocked ? '✓' : '🔒'}</b></div>`;
   }).join('');
-  openModal('👤 ملف اللاعب', `<div class="profile-sheet"><p><b>${profile.name}</b> · ${title} · المستوى ${level}</p><p>النقاط: ${profile.xp} XP · السباقات: ${profile.games} · الانتصارات: ${profile.wins} · أفضل سلسلة: ${profile.bestStreak}</p><div class="ach-grid">${ach}</div><div class="profile-actions"><button class="ghost-button" data-action="edit-name">تعديل الاسم</button><button class="ghost-button" data-action="enable-notifications">تفعيل الإشعارات</button><button class="ghost-button" data-action="google-signin">تسجيل الدخول بـ Google</button></div></div>`, 'info');
+  openModal('👤 ملف اللاعب', `<div class="profile-sheet"><p><b>${profile.name}</b> · ${title} · المستوى ${level}</p><p>النقاط: ${profile.xp} XP · السباقات: ${profile.games} · الانتصارات: ${profile.wins} · أفضل سلسلة: ${profile.bestStreak}</p><div class="ach-grid">${ach}</div><div class="profile-actions"><button class="ghost-button" data-action="edit-name">تعديل الاسم</button><button class="ghost-button" data-action="enable-notifications">تفعيل الإشعارات</button><button class="ghost-button" data-action="google-signin">تسجيل الدخول بـ Google</button><button class="ghost-button" data-action="open-our-apps">📱 تطبيقاتنا</button></div></div>`, 'info');
 }
 
 function loadGsi() {
@@ -1424,7 +1424,7 @@ function bindEvents() {
       else if (action === 'home') { clearRoundTimers(); showScreen('home'); }
       else if (action === 'theme') toggleTheme();
       else if (action === 'how-to-play') openHowToPlay();
-      else if (action === 'open-sources') openSources();
+      else if (action === 'open-sources') openSources(); else if (action === 'open-our-apps') openOurApps();
       else if (action === 'show-question-source') showQuestionSource();
       else if (action === 'close-modal') closeModal();
       else if (action === 'confirm-primary') closeModal(true);
