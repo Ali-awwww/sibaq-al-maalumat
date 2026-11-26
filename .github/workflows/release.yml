@@ -1,4 +1,4 @@
-# إصدار v1.4.1: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.4.2: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -73,31 +73,19 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.4.1.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.4.2.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.4.1.apk
-          ls -lh sibaq-al-maalumat-v1.4.1.apk sibaq-al-maalumat-web-v1.4.1.zip
-      - name: نشر Release v1.4.1
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.4.2.apk
+          ls -lh sibaq-al-maalumat-v1.4.2.apk sibaq-al-maalumat-web-v1.4.2.zip
+      - name: نشر Release v1.4.2
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          سباق المعلومات v1.4.1 — تصحيح أسئلة بنك الأسئلة بعد مراجعة دقيقة لكل سؤال جديد.
-          
-          ما تم تصحيحه في هذا الإصدار:
-          - حذف 19 سؤالاً مكرراً أو خاطئاً (17 من الدفعة الجديدة + سؤالان من البنك القديم)، منها سؤال يستند إلى حديث موضوع، وسؤال بإجابة خاطئة عن معركة اليرموك.
-          - تصحيح 27 سؤالاً: صياغة دقيقة للأحكام الخلافية («عند جمهور العلماء»)، ومصادر محددة بأرقام الأحاديث، وشروح مضافة، وتصحيح ترجمتين إنجليزيتين.
-          - بنك الأسئلة الآن 635 سؤالاً موثّقاً + 20 سؤالاً لوضع «اختبر حفظك».
-          
-          - سباق 10 أسئلة ضد الكمبيوتر (15 ثانية لكل سؤال)، مع قدرات خاصة (تخطّي، تجميد الخصم، مضاعفة النقاط) وسؤال فاصل عند التعادل.
-          - بنك 635 سؤالاً موثّقاً بمصدره في 6 فئات (قرآن، سيرة، فقه، حديث، تاريخ إسلامي، عقيدة) + وضع دون اتصال + لعب كضيف.
-          - أوضاع أونلاين عبر Supabase Realtime: مطابقة عشوائية، غرف أصدقاء برابط/رمز، تحدٍّ يومي، بطولات.
-          - تقدّم وألقاب وإنجازات ولوحة صدارة ودوريات (حديد ← بطل)، ودخول Google (Gmail) فقط.
-          - تطبيق أندرويد (com.sibaqalmaalumat.app) موقّع بشهادة الإصدار الجديدة، ويفتح عبر المخطط sibaqalmaalumat:// من زر «افتح التطبيق» في المعرض.
-          - الملف المرفق sibaq-al-maalumat-web-v1.4.1.zip يحتوي نسخة الويب كاملة — افتح index.html للعب.
+          إضافة شروحات ومصادر موثقة لجميع الأسئلة الـ600
           EOF
-          gh release create v1.4.1 \
-            --title "سباق المعلومات v1.4.1" \
+          gh release create v1.4.2 \
+            --title "سباق المعلومات v1.4.2" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.4.1.apk sibaq-al-maalumat-web-v1.4.1.zip
+            sibaq-al-maalumat-v1.4.2.apk sibaq-al-maalumat-web-v1.4.2.zip
             
