@@ -53,6 +53,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           cd android
+          chmod +x ./gradlew
           ./gradlew assembleRelease --stacktrace
           ls -lh app/build/outputs/apk/release/
       - name: التحقق من توقيع APK وبصمة الشهادة
