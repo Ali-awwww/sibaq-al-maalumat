@@ -269,7 +269,7 @@
             <button type="button" class="ghost-button" data-action="open-sources" data-i18n="usedSources">المصادر المستخدمة</button>
           </div>
 
-          <footer class="app-version-footer" id="appVersionFooter">سباق المعلومات · v1.5.0</footer>
+          <footer class="app-version-footer" id="appVersionFooter">سباق المعلومات · v1.5.1</footer>
         </section>
 
         <section class="screen campaign-screen" id="campaignScreen" hidden aria-labelledby="campaignTitle">
@@ -374,8 +374,29 @@
                   <strong class="lane-score" id="opponentScore">0</strong>
                 </div>
                 <div class="track-line">
-                  <div class="track-glow"></div>
-                  <span class="runner opponent-runner" id="opponentRunner" aria-hidden="true">🏇</span>
+                  <div class="track-glow-wrap" aria-hidden="true"><div class="track-glow"></div></div>
+                  <div class="runner-carrier" aria-hidden="true">
+                    <div class="runner opponent-runner" id="opponentRunner">
+                      <span class="runner-bubble" aria-hidden="true"></span>
+                      <span class="runner-dust" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <span class="runner-anim">
+                        <svg class="runner-svg" viewBox="0 0 64 64" width="48" height="48">
+                          <g class="runner-body">
+                            <g class="runner-arm-back"><path d="M31 26 24 31 19 27" /><circle cx="19" cy="27" r="2.2" /></g>
+                            <g class="runner-leg-back"><path d="M30 38 23 46 16 52" /><path class="runner-shoe-back" d="M13 52h6" /></g>
+                            <path class="runner-ribbon" d="M31 13c-5-2-9-1-12 2" />
+                            <path class="runner-torso" d="M27 22h11l-3 16h-9z" />
+                            <path class="runner-stripe" d="M31 24l-1.5 12" />
+                            <circle class="runner-head" cx="36" cy="14" r="6" />
+                            <path class="runner-hair" d="M30 13a6.2 6.2 0 0 1 11.5-2.5c-2.5-.8-6.5-.5-11.5 2.5z" />
+                            <path class="runner-band" d="M30 13.2h11.6" />
+                            <g class="runner-leg-front"><path d="M33 38 41 45 45 53" /><path class="runner-shoe-front" d="M43 53h7" /></g>
+                            <g class="runner-arm-front"><path d="M35 26 42 30 47 25" /><circle cx="47" cy="25" r="2.2" /></g>
+                          </g>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -389,8 +410,29 @@
                   <strong class="lane-score" id="playerScore">0</strong>
                 </div>
                 <div class="track-line">
-                  <div class="track-glow"></div>
-                  <span class="runner player-runner" id="playerRunner" aria-hidden="true">🏇</span>
+                  <div class="track-glow-wrap" aria-hidden="true"><div class="track-glow"></div></div>
+                  <div class="runner-carrier" aria-hidden="true">
+                    <div class="runner player-runner" id="playerRunner">
+                      <span class="runner-bubble" aria-hidden="true"></span>
+                      <span class="runner-dust" aria-hidden="true"><i></i><i></i><i></i></span>
+                      <span class="runner-anim">
+                        <svg class="runner-svg" viewBox="0 0 64 64" width="48" height="48">
+                          <g class="runner-body">
+                            <g class="runner-arm-back"><path d="M31 26 24 31 19 27" /><circle cx="19" cy="27" r="2.2" /></g>
+                            <g class="runner-leg-back"><path d="M30 38 23 46 16 52" /><path class="runner-shoe-back" d="M13 52h6" /></g>
+                            <path class="runner-ribbon" d="M31 13c-5-2-9-1-12 2" />
+                            <path class="runner-torso" d="M27 22h11l-3 16h-9z" />
+                            <path class="runner-stripe" d="M31 24l-1.5 12" />
+                            <circle class="runner-head" cx="36" cy="14" r="6" />
+                            <path class="runner-hair" d="M30 13a6.2 6.2 0 0 1 11.5-2.5c-2.5-.8-6.5-.5-11.5 2.5z" />
+                            <path class="runner-band" d="M30 13.2h11.6" />
+                            <g class="runner-leg-front"><path d="M33 38 41 45 45 53" /><path class="runner-shoe-front" d="M43 53h7" /></g>
+                            <g class="runner-arm-front"><path d="M35 26 42 30 47 25" /><circle cx="47" cy="25" r="2.2" /></g>
+                          </g>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 

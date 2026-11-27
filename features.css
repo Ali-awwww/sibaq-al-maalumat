@@ -608,17 +608,26 @@
 
 .burst-spark {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  top: 42%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--gold-bright);
   pointer-events: none;
-  animation: burst-fly 0.85s ease-out forwards;
+  z-index: 4;
+  will-change: transform, opacity;
+  animation: burst-fly 0.85s var(--ease) forwards;
+}
+
+.burst-spark.is-emerald {
+  background: var(--emerald-bright);
+  border-radius: 2px;
 }
 
 @keyframes burst-fly {
-  from { transform: translate(0, 0) scale(1); opacity: 1; }
-  to { transform: translate(var(--bx, 0), var(--by, -80px)) scale(0.2); opacity: 0; }
+  0% { transform: translate3d(-50%, -50%, 0) scale(0.6) rotate(0deg); opacity: 1; }
+  100% { transform: translate3d(var(--bx, 0), var(--by, -80px), 0) scale(0.25) rotate(220deg); opacity: 0; }
 }
 
 /* Translation Notice & Arabic Companion */
@@ -1752,4 +1761,14 @@
 [data-theme="light"] .league-zone-chip.relegate,
 [data-theme="light"] .chapter-diff-pill.hard {
   color: #b4232c;
+}
+
+.google-button:active,
+.quick-tool-btn:active,
+.hifz-mode-btn:active,
+.campaign-level-node:active:not(.locked),
+.quit-button:active,
+.hifz-surah-chip:active,
+.spectate-inline-btn:active {
+  transform: scale(0.97) !important;
 }

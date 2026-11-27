@@ -1071,7 +1071,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.5.0', 'Knowledge Race · v1.5.0');
+    verFooter.textContent = tr('سباق المعلومات · v1.5.1', 'Knowledge Race · v1.5.1');
   }
   updateHomeStats();
   applyKidsMode();
@@ -1471,10 +1471,11 @@ function updateHomeStats() {
   const xpValue = document.querySelector('#xpValue');
   const xpBar = document.querySelector('#xpBar');
   const xpCap = 250;
-  if (wins) wins.textContent = profile.wins;
-  if (accuracy) accuracy.textContent = `${profile.totalAnswered ? Math.round((profile.totalCorrect / profile.totalAnswered) * 100) : 0}%`;
-  if (streak) streak.textContent = profile.bestStreak;
-  if (xpValue) xpValue.textContent = `${profile.xp} / ${xpCap} XP`;
+  const accPct = profile.totalAnswered ? Math.round((profile.totalCorrect / profile.totalAnswered) * 100) : 0;
+  if (wins) animateCount(wins, profile.wins);
+  if (accuracy) animateCount(accuracy, accPct, (n) => `${n}%`);
+  if (streak) animateCount(streak, profile.bestStreak);
+  if (xpValue) animateCount(xpValue, profile.xp, (n) => `${n} / ${xpCap} XP`);
   if (xpBar) xpBar.style.width = `${Math.min(100, (profile.xp % xpCap) / xpCap * 100)}%`;
   const level = Math.floor(profile.xp / xpCap) + 1;
   const title = displayTitle(titleFor(profile.xp));
@@ -2546,6 +2547,8 @@ function startSpectatorMode(roomCode = '') {
       state.opponentProgress = Math.min(10, state.opponentProgress + 1);
       state.opponentScore += 10;
     }
+    triggerRunnerReaction(ui.playerRunner, pHit ? 'happy' : 'sad');
+    triggerRunnerReaction(ui.opponentRunner, oHit ? 'happy' : 'sad');
     updateScoreboard();
     state.index += 1;
     if (state.index >= state.questions.length) {
@@ -2890,6 +2893,7 @@ function showScreen(name) {
     screen.classList.toggle('active', active);
     screen.hidden = !active;
   });
+  if (ui.race) ui.race.classList.toggle('is-racing', name === 'race' && !state.gameOver);
   document.querySelectorAll('.bottom-nav .nav-item[data-nav]').forEach((item) => {
     item.classList.toggle('active', item.dataset.nav === name);
   });
@@ -2949,8 +2953,19 @@ function resetRaceState() {
   state.times = [];
   state.gameOver = false;
   state.locked = false;
-  ui.playerScore.textContent = '0';
-  ui.opponentScore.textContent = '0';
+  clearRunnerReactions();
+  if (ui.playerScore) {
+    ui.playerScore.dataset.countVal = '0';
+    ui.playerScore.textContent = '0';
+  }
+  if (ui.opponentScore) {
+    ui.opponentScore.dataset.countVal = '0';
+    ui.opponentScore.textContent = '0';
+  }
+  if (ui.raceStreak) {
+    ui.raceStreak.dataset.countVal = '0';
+    ui.raceStreak.textContent = '0';
+  }
   setProgress(ui.playerRunner, 0);
   setProgress(ui.opponentRunner, 0);
 }
@@ -3352,9 +3367,11 @@ function botRespond() {
     state.opponentProgress = Math.min(10, state.opponentProgress + 1);
     state.opponentScore += botFirst ? 10 : 5;
     updateScoreboard();
+    triggerRunnerReaction(ui.opponentRunner, 'happy');
     if (!state.locked) showToast(tr(`⚡ ${opp} أجاب قبلك — تقدّم خطوة`, `⚡ ${opp} answered first — moved ahead`));
-  } else if (!state.locked) {
-    showToast(tr(`💨 ${opp} أخطأ — فرصتك الآن`, `💨 ${opp} missed — your chance!`));
+  } else {
+    triggerRunnerReaction(ui.opponentRunner, 'sad');
+    if (!state.locked) showToast(tr(`💨 ${opp} أخطأ — فرصتك الآن`, `💨 ${opp} missed — your chance!`));
   }
 }
 
@@ -3369,6 +3386,9 @@ function applyPendingBotResult(playerWasCorrect) {
     state.opponentProgress = Math.min(10, state.opponentProgress + 1);
     state.opponentScore += playerWasCorrect ? 5 : 10;
     updateScoreboard();
+    triggerRunnerReaction(ui.opponentRunner, 'happy');
+  } else {
+    triggerRunnerReaction(ui.opponentRunner, 'sad');
   }
 }
 
@@ -3473,6 +3493,7 @@ function scoreAnswer(isCorrect, wrongFeedback) {
           : tr(`إجابة صحيحة — +${points} نقاط، الخصم كان أسرع`, `Correct answer — +${points} pts, opponent was faster`);
     ui.feedback.className = 'answer-feedback good';
     ui.card.classList.add('answer-correct');
+    triggerRunnerReaction(ui.playerRunner, 'happy');
     burstSparkles();
     showCompanionMessage('correct');
   } else {
@@ -3482,9 +3503,10 @@ function scoreAnswer(isCorrect, wrongFeedback) {
       : (wrongFeedback || tr('انتهى الوقت — لا تتوقف، السؤال التالي ينتظرك', 'Time is up — keep going!'));
     ui.feedback.className = 'answer-feedback bad';
     ui.card.classList.add('answer-wrong');
+    triggerRunnerReaction(ui.playerRunner, 'sad');
     if (kidsMode) showCompanionMessage('kids-encourage', tr('لا بأس يا بطل، التعلّم خطوة بخطوة!', 'Keep trying, learning happens step by step!'));
   }
-  ui.raceStreak.textContent = state.streak;
+  animateCount(ui.raceStreak, state.streak);
   updateScoreboard();
   updateTeamBattleBanner();
   if (state.mode === 'online') pushOnlineScore();
@@ -3545,9 +3567,23 @@ function advanceQuestion() {
   else renderQuestion();
 }
 
+function setResultVictoryState(isVictory) {
+  const rCard = ui.result ? ui.result.querySelector('.result-card') : null;
+  if (rCard) rCard.classList.toggle('is-victory', Boolean(isVictory));
+}
+
+function showAnimatedFinalScore(score) {
+  if (!ui.finalScore) return;
+  ui.finalScore.dataset.countVal = '0';
+  ui.finalScore.textContent = '0';
+  animateCount(ui.finalScore, score, (n) => String(n), 620);
+}
+
 function finishRace() {
   state.gameOver = true;
   clearRoundTimers();
+  clearRunnerReactions();
+  if (ui.race) ui.race.classList.remove('is-racing');
   const accuracy = state.raceTotal ? Math.round((state.correct / state.raceTotal) * 100) : 0;
   const average = state.times.length ? (state.times.reduce((sum, time) => sum + time, 0) / state.times.length).toFixed(1) : '—';
   const speedSuffix = tr('ث', 's');
@@ -3559,7 +3595,7 @@ function finishRace() {
 
   if (state.mode === 'spectator' || state.spectating) {
     state.spectating = false;
-    ui.finalScore.textContent = state.playerScore;
+    showAnimatedFinalScore(state.playerScore);
     ui.finalCorrect.textContent = `${state.playerProgress}/10`;
     ui.finalAccuracy.textContent = `${Math.round((state.playerProgress / 10) * 100)}%`;
     ui.finalSpeed.textContent = '—';
@@ -3574,6 +3610,7 @@ function finishRace() {
       ui.resultPrimaryBtn.dataset.action = 'start-race';
     }
     if (ui.resultCampaignBtn) ui.resultCampaignBtn.hidden = true;
+    setResultVictoryState(false);
     showScreen('result');
     return;
   }
@@ -3590,7 +3627,7 @@ function finishRace() {
     saveProfile();
     recordDailyActivity({ raceCompleted: true, correctAdded: state.correct });
     const lpGain = awardLeaguePoints({ won: passed });
-    ui.finalScore.textContent = state.playerScore;
+    showAnimatedFinalScore(state.playerScore);
     ui.finalCorrect.textContent = `${state.correct}/${state.raceTotal}`;
     ui.finalAccuracy.textContent = `${accuracy}%`;
     ui.finalSpeed.textContent = average === '—' ? average : `${average}${speedSuffix}`;
@@ -3605,6 +3642,7 @@ function finishRace() {
       ui.resultPrimaryBtn.dataset.action = 'replay-hifz';
     }
     if (ui.resultCampaignBtn) ui.resultCampaignBtn.hidden = true;
+    setResultVictoryState(passed);
     showScreen('result');
     if (passed) { createConfetti(); showCompanionMessage('win'); }
     updateHomeStats();
@@ -3645,7 +3683,7 @@ function finishRace() {
     syncProgressToSupabaseMetadata();
     saveRaceHistory({ date: new Date().toISOString(), mode: `campaign-${cfg.level}`, score: state.playerScore, correct: state.correct, total: state.raceTotal, won: passed });
 
-    ui.finalScore.textContent = state.playerScore;
+    ui.finalScore && showAnimatedFinalScore(state.playerScore);
     ui.finalCorrect.textContent = `${state.correct}/${state.raceTotal}`;
     ui.finalAccuracy.textContent = `${accuracy}%`;
     ui.finalSpeed.textContent = average === '—' ? average : `${average}${speedSuffix}`;
@@ -3681,6 +3719,7 @@ function finishRace() {
       }
     }
     if (ui.resultCampaignBtn) ui.resultCampaignBtn.hidden = false;
+    setResultVictoryState(passed);
     showScreen('result');
     updateHomeStats();
     if (passed) {
@@ -3730,7 +3769,7 @@ function finishRace() {
   }
   syncProgressToSupabaseMetadata();
   saveRaceHistory({ date: new Date().toISOString(), mode: state.mode, score: state.playerScore, correct: state.correct, total: state.raceTotal, won });
-  ui.finalScore.textContent = state.playerScore;
+  showAnimatedFinalScore(state.playerScore);
   ui.finalCorrect.textContent = `${state.correct}/${state.raceTotal}`;
   ui.finalAccuracy.textContent = `${accuracy}%`;
   ui.finalSpeed.textContent = average === '—' ? average : `${average}${speedSuffix}`;
@@ -3770,6 +3809,7 @@ function finishRace() {
     ui.resultSubtitle.textContent = tr(`راجع المصادر وحاول مرة أخرى — +${lpGain} نقطة دوري.`, `Review the sources and try again — +${lpGain} League pts.`);
   }
   if (state.tiebreakRound > 0 && !tie) ui.resultSubtitle.textContent += tr(' (حُسم بسؤال فاصل ⚡)', ' (Decided by tiebreaker ⚡)');
+  setResultVictoryState(won || state.mode === 'daily');
   showScreen('result');
   updateHomeStats();
   recordOnlineResult();
@@ -3838,16 +3878,86 @@ function clearRoundTimers() {
   }
 }
 
+function prefersReducedMotion() {
+  return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+function popElement(el) {
+  if (!el || prefersReducedMotion()) return;
+  el.classList.remove('is-popping');
+  window.requestAnimationFrame(() => el.classList.add('is-popping'));
+}
+
+function animateCount(el, targetValue, formatFn = (n) => String(n), duration = 420) {
+  if (!el) return;
+  const target = Math.max(0, Math.round(Number(targetValue) || 0));
+  const prevRaw = el.dataset.countVal;
+  const prev = prevRaw === undefined ? NaN : Number(prevRaw);
+  el.dataset.countVal = String(target);
+  if (el._countRaf) {
+    cancelAnimationFrame(el._countRaf);
+    el._countRaf = null;
+  }
+  if (prefersReducedMotion() || Number.isNaN(prev) || prev === target) {
+    el.textContent = formatFn(target);
+    return;
+  }
+  if (target > prev) popElement(el);
+  const start = performance.now();
+  const delta = target - prev;
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(prev + delta * eased);
+    el.textContent = formatFn(val);
+    if (t < 1) {
+      el._countRaf = requestAnimationFrame(step);
+    } else {
+      el._countRaf = null;
+      el.textContent = formatFn(target);
+    }
+  };
+  el._countRaf = requestAnimationFrame(step);
+}
+
+function triggerRunnerReaction(runner, kind) {
+  if (!runner) return;
+  const bubble = runner.querySelector('.runner-bubble');
+  clearTimeout(runner._reactionTimer);
+  runner.classList.remove('is-happy', 'is-sad');
+  if (bubble) bubble.textContent = kind === 'happy' ? '🎉😃' : '😢😮💨';
+  window.requestAnimationFrame(() => {
+    runner.classList.add(kind === 'happy' ? 'is-happy' : 'is-sad');
+  });
+  runner._reactionTimer = window.setTimeout(() => {
+    runner.classList.remove('is-happy', 'is-sad');
+    runner._reactionTimer = null;
+  }, 1450);
+}
+
+function clearRunnerReactions() {
+  [ui.playerRunner, ui.opponentRunner].forEach((runner) => {
+    if (!runner) return;
+    clearTimeout(runner._reactionTimer);
+    runner._reactionTimer = null;
+    runner.classList.remove('is-happy', 'is-sad');
+  });
+}
+
 function setProgress(runner, progress) {
   if (!runner) return;
+  const ratio = Math.max(0, Math.min(1, Number(progress || 0) / 10));
   runner.style.setProperty('--progress', progress);
   const track = runner.closest('.track-line');
-  if (track) track.style.setProperty('--progress', `${progress * 10}%`);
+  if (track) {
+    track.style.setProperty('--progress', `${ratio * 100}%`);
+    track.style.setProperty('--progress-ratio', String(ratio));
+  }
 }
 
 function updateScoreboard() {
-  ui.playerScore.textContent = state.playerScore;
-  ui.opponentScore.textContent = state.opponentScore;
+  animateCount(ui.playerScore, state.playerScore);
+  animateCount(ui.opponentScore, state.opponentScore);
   setProgress(ui.playerRunner, state.playerProgress);
   setProgress(ui.opponentRunner, state.opponentProgress);
 }
@@ -4322,7 +4432,7 @@ function openProfile() {
   `;
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.0', 'Version v1.5.0')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.1', 'Version v1.5.1')}</small></p></div>`,
     'info',
   );
 }
@@ -4464,12 +4574,14 @@ function createConfetti() {
 
 function burstSparkles() {
   const card = ui.card;
-  if (!card) return;
-  for (let i = 0; i < 10; i++) {
+  if (!card || prefersReducedMotion()) return;
+  for (let i = 0; i < 12; i++) {
     const spark = document.createElement('span');
-    spark.className = 'burst-spark';
-    spark.style.setProperty('--bx', `${(Math.random() - 0.5) * 220}px`);
-    spark.style.setProperty('--by', `${(Math.random() - 0.7) * 180}px`);
+    spark.className = i % 2 === 1 ? 'burst-spark is-emerald' : 'burst-spark';
+    const angle = (Math.PI * 2 * i) / 12 + (Math.random() - 0.5) * 0.35;
+    const dist = 68 + Math.random() * 68;
+    spark.style.setProperty('--bx', `${Math.cos(angle) * dist}px`);
+    spark.style.setProperty('--by', `${Math.sin(angle) * dist - 22}px`);
     card.appendChild(spark);
     window.setTimeout(() => spark.remove(), 900);
   }

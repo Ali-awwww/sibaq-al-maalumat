@@ -1,4 +1,4 @@
-# إصدار v1.5.0: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.5.1: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -74,19 +74,19 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.5.0.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.5.1.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.0.apk
-          ls -lh sibaq-al-maalumat-v1.5.0.apk sibaq-al-maalumat-web-v1.5.0.zip
-      - name: نشر Release v1.5.0
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.1.apk
+          ls -lh sibaq-al-maalumat-v1.5.1.apk sibaq-al-maalumat-web-v1.5.1.zip
+      - name: نشر Release v1.5.1
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          إعادة تصميم واجهة سباق المعلومات بالكامل بأسلوب لعبة حديث متناسق في كل الشاشات (v1.5.0) مع الحفاظ على بنك الأسئلة وتحصين التحقق منه.
+          تحديث سباق المعلومات إلى v1.5.1: تحسينات بصرية وأنيميشن غني وشخصيات SVG متحركة على المضمار مع الحفاظ الكامل على منطق اللعبة وبنك الأسئلة.
           EOF
-          gh release create v1.5.0 \
-            --title "سباق المعلومات v1.5.0" \
+          gh release create v1.5.1 \
+            --title "سباق المعلومات v1.5.1" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.5.0.apk sibaq-al-maalumat-web-v1.5.0.zip
+            sibaq-al-maalumat-v1.5.1.apk sibaq-al-maalumat-web-v1.5.1.zip
             
