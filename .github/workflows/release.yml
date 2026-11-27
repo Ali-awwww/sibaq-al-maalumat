@@ -1,4 +1,4 @@
-# إصدار v1.5.3: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.5.4: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -74,21 +74,21 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.5.3.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.5.4.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.3.apk
-          ls -lh sibaq-al-maalumat-v1.5.3.apk sibaq-al-maalumat-web-v1.5.3.zip
-      - name: نشر Release v1.5.3
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.4.apk
+          ls -lh sibaq-al-maalumat-v1.5.4.apk sibaq-al-maalumat-web-v1.5.4.zip
+      - name: نشر Release v1.5.4
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          تحديث سباق المعلومات إلى v1.5.3:
-          - إصلاح بقاء وحفظ تسجيل الدخول بـ Google في تطبيق أندرويد (Capacitor): استخدام رابط إعادة التوجيه المخصص sibaqalmaalumat://auth/callback عند التشغيل الأصلي، وفتح تدفق OAuth خارج WebView عبر إضافة @capacitor/browser، ومعالجة العودة في الإقلاع البارد عبر App.getLaunchUrl() بجانب appUrlOpen لحفظ الجلسة داخل التطبيق مباشرة.
-          - الحفاظ الكامل على كل مميزات v1.5.2، وبنك الأسئلة (634 سؤالاً)، وقواعد اللعبة، والوضعين الفاتح والداكن.
+          تحديث سباق المعلومات إلى v1.5.4:
+          - توسيع بنك الأسئلة إلى 1000 سؤال (366 سؤالاً جديداً موثقاً بالمصادر في الفئات الست: القرآن والسيرة والحديث والفقه والعقيدة والتاريخ).
+          - الحفاظ الكامل على كل مميزات v1.5.3، بما فيها بقاء تسجيل الدخول بـ Google داخل تطبيق أندرويد، وقواعد اللعبة، والوضعين الفاتح والداكن.
           EOF
-          gh release create v1.5.3 \
-            --title "سباق المعلومات v1.5.3" \
+          gh release create v1.5.4 \
+            --title "سباق المعلومات v1.5.4" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.5.3.apk sibaq-al-maalumat-web-v1.5.3.zip
+            sibaq-al-maalumat-v1.5.4.apk sibaq-al-maalumat-web-v1.5.4.zip
             
