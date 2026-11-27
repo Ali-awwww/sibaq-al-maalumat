@@ -95,14 +95,20 @@ function purgeExcludedUserData() {
   }
 }
 
-function getSupabaseRedirectUrl() {
-  const isNative = typeof window !== 'undefined' && Boolean(
-    (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ||
-    (window.location && (window.location.protocol === 'capacitor:' || (window.location.hostname === 'localhost' && !window.location.port)))
+function isNativeCapacitorApp() {
+  if (typeof window === 'undefined') return false;
+  if (window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform()) {
+    return true;
+  }
+  return Boolean(
+    window.location &&
+    (window.location.protocol === 'capacitor:' || (window.location.hostname === 'localhost' && !window.location.port))
   );
-  if (isNative) {
-    // Whitelisted Supabase redirect URL that routes to the published app and deep-links to native
-    return 'https://ali-awwww.github.io/sibaq-al-maalumat/';
+}
+
+function getSupabaseRedirectUrl() {
+  if (isNativeCapacitorApp()) {
+    return 'sibaqalmaalumat://auth/callback';
   }
   return `${location.origin}${location.pathname}`;
 }
@@ -332,20 +338,36 @@ async function trySupabaseAnonymousSignIn() {
   return false;
 }
 
+async function openOAuthUrl(url) {
+  if (!url) return false;
+  const capBrowser = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser;
+  if (isNativeCapacitorApp() && capBrowser && typeof capBrowser.open === 'function') {
+    await capBrowser.open({ url });
+    return true;
+  }
+  window.location.assign(url);
+  return true;
+}
+
 async function signInWithGoogleSupabase() {
   if (!isAppOnline()) return { ok: false, reason: tr('هذا الوضع يحتاج اتصالاً بالإنترنت', 'This mode requires an internet connection') };
   const client = await getSupabaseClient();
   if (!client) return { ok: false, reason: tr('مكتبة Supabase غير متاحة', 'Supabase library unavailable') };
   const redirectTo = getSupabaseRedirectUrl();
-  const { error } = await client.auth.signInWithOAuth({
+  const { data, error } = await client.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo,
+      skipBrowserRedirect: true,
       queryParams: { access_type: 'offline', prompt: 'consent' },
     },
   });
   if (error) return { ok: false, reason: error.message };
-  return { ok: true };
+  if (data && data.url) {
+    await openOAuthUrl(data.url);
+    return { ok: true };
+  }
+  return { ok: false, reason: tr('تعذّر إنشاء رابط تسجيل الدخول', 'Could not build OAuth URL') };
 }
 
 async function ensureSupabaseSignedIn(pendingAction) {
@@ -1206,7 +1228,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.5.2', 'Knowledge Race · v1.5.2');
+    verFooter.textContent = tr('سباق المعلومات · v1.5.3', 'Knowledge Race · v1.5.3');
   }
   updateHomeStats();
   applyKidsMode();
@@ -4563,7 +4585,7 @@ function openProfile() {
   `;
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.2', 'Version v1.5.2')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.3', 'Version v1.5.3')}</small></p></div>`,
     'info',
   );
 }
@@ -4610,8 +4632,14 @@ async function linkGmailAccount() {
     const redirectTo = getSupabaseRedirectUrl();
     if (supabaseUser && supabaseUser.is_anonymous && client.auth && typeof client.auth.linkIdentity === 'function') {
       try {
-        const { error } = await client.auth.linkIdentity({ provider: 'google', options: { redirectTo } });
-        if (!error) return;
+        const { data, error } = await client.auth.linkIdentity({
+          provider: 'google',
+          options: { redirectTo, skipBrowserRedirect: true },
+        });
+        if (!error && data && data.url) {
+          await openOAuthUrl(data.url);
+          return;
+        }
       } catch (error) { /* fall back to standard OAuth signIn */ }
     }
     const res = await signInWithGoogleSupabase();
@@ -4888,6 +4916,14 @@ function boot() {
   checkSeasonRolloverOnBoot();
   if (typeof window !== 'undefined' && window.location && (window.location.hash || window.location.search)) {
     handleIncomingAuthTokens(window.location.href);
+  }
+  const capApp = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+  if (capApp && typeof capApp.getLaunchUrl === 'function') {
+    capApp.getLaunchUrl()
+      .then((launch) => {
+        if (launch && launch.url) handleIncomingAuthTokens(launch.url);
+      })
+      .catch(() => { /* ignore */ });
   }
   refreshSupabaseSession();
   mergeRemoteQuestions();
