@@ -1071,7 +1071,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.4.2', 'Knowledge Race · v1.4.2');
+    verFooter.textContent = tr('سباق المعلومات · v1.4.3', 'Knowledge Race · v1.4.3');
   }
   updateHomeStats();
   applyKidsMode();
@@ -2896,21 +2896,35 @@ function shuffle(list) {
 }
 
 function validateQuestionBank() {
+  // A single bad question must never kill the whole app again (v1.4.2 bug:
+  // a duplicated question text threw here, boot() died before bindEvents(),
+  // and no button worked). Skip invalid questions with a warning instead.
   const seenIds = new Set();
   const seenTexts = new Set();
   const categories = new Set();
+  const invalid = [];
   for (const question of QUESTION_BANK) {
-    if (seenIds.has(question.id)) throw new Error(`Duplicate question id: ${question.id}`);
-    if (seenTexts.has(question.question)) throw new Error(`Duplicate question text: ${question.question}`);
-    if (!question.source || typeof question.source !== 'string') throw new Error(`Question ${question.id} has no source`);
-    if (question.correct < 0 || question.correct >= question.options.length) throw new Error(`Invalid correct index for question ${question.id}`);
-    if (question.type === 'order') {
-      if (!Array.isArray(question.correctOrder) || question.correctOrder.length !== question.options.length || new Set(question.correctOrder).size !== question.options.length || question.correctOrder.some((i) => i < 0 || i >= question.options.length)) throw new Error(`Invalid order for question ${question.id}`);
+    let reason = null;
+    if (seenIds.has(question.id)) reason = `Duplicate question id: ${question.id}`;
+    else if (seenTexts.has(question.question)) reason = `Duplicate question text: ${question.question}`;
+    else if (!question.source || typeof question.source !== 'string') reason = `Question ${question.id} has no source`;
+    else if (!Array.isArray(question.options) || question.correct < 0 || question.correct >= question.options.length) reason = `Invalid correct index for question ${question.id}`;
+    else if (question.type === 'order' && (!Array.isArray(question.correctOrder) || question.correctOrder.length !== question.options.length || new Set(question.correctOrder).size !== question.options.length || question.correctOrder.some((i) => i < 0 || i >= question.options.length))) reason = `Invalid order for question ${question.id}`;
+    if (reason) {
+      console.warn(`تخطَّى سؤالاً غير صالح في بنك الأسئلة: ${reason}`);
+      invalid.push(question);
+      continue;
     }
     seenIds.add(question.id);
     seenTexts.add(question.question);
     categories.add(question.category);
   }
+  if (invalid.length) {
+    for (let i = QUESTION_BANK.length - 1; i >= 0; i--) {
+      if (invalid.includes(QUESTION_BANK[i])) QUESTION_BANK.splice(i, 1);
+    }
+  }
+  if (QUESTION_BANK.length < 10) throw new Error(`Question bank too small after validation: ${QUESTION_BANK.length} questions`);
   if (categories.size < 6) throw new Error(`Expected 6 categories, found ${categories.size}`);
 }
 
@@ -4218,7 +4232,7 @@ function openProfile() {
   }).join('');
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p><p>${tr('النقاط', 'XP')}: ${profile.xp} XP · ${tr('السباقات', 'Races')}: ${profile.games} · ${tr('الانتصارات', 'Wins')}: ${profile.wins} · ${tr('أفضل سلسلة', 'Best Streak')}: ${profile.bestStreak}</p>${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.4.2', 'Version v1.4.2')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p><p>${tr('النقاط', 'XP')}: ${profile.xp} XP · ${tr('السباقات', 'Races')}: ${profile.games} · ${tr('الانتصارات', 'Wins')}: ${profile.wins} · ${tr('أفضل سلسلة', 'Best Streak')}: ${profile.bestStreak}</p>${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.4.3', 'Version v1.4.3')}</small></p></div>`,
     'info',
   );
 }
