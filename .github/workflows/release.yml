@@ -1,4 +1,4 @@
-# إصدار v1.4.2: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.4.3: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -73,19 +73,19 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.4.2.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.4.3.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.4.2.apk
-          ls -lh sibaq-al-maalumat-v1.4.2.apk sibaq-al-maalumat-web-v1.4.2.zip
-      - name: نشر Release v1.4.2
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.4.3.apk
+          ls -lh sibaq-al-maalumat-v1.4.3.apk sibaq-al-maalumat-web-v1.4.3.zip
+      - name: نشر Release v1.4.3
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          إضافة شروحات ومصادر موثقة لجميع الأسئلة الـ600
+          إصلاح توقف اللعبة: حذف السؤال المكرر وتحصين التحقق من بنك الأسئلة حتى لا يوقف سؤال واحد سيئ اللعبة كلها
           EOF
-          gh release create v1.4.2 \
-            --title "سباق المعلومات v1.4.2" \
+          gh release create v1.4.3 \
+            --title "سباق المعلومات v1.4.3" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.4.2.apk sibaq-al-maalumat-web-v1.4.2.zip
+            sibaq-al-maalumat-v1.4.3.apk sibaq-al-maalumat-web-v1.4.3.zip
             
