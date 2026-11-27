@@ -1,4 +1,4 @@
-# إصدار v1.4.3: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.5.0: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -32,7 +32,7 @@ jobs:
           "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - name: بناء الويب ومزامنة Capacitor
         run: |
-          npm ci
+          npm install
           npm run build
           npx cap sync android
       - name: استعادة keystore الإصدار والتحقق من سلامته
@@ -73,19 +73,19 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.4.3.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.5.0.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.4.3.apk
-          ls -lh sibaq-al-maalumat-v1.4.3.apk sibaq-al-maalumat-web-v1.4.3.zip
-      - name: نشر Release v1.4.3
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.0.apk
+          ls -lh sibaq-al-maalumat-v1.5.0.apk sibaq-al-maalumat-web-v1.5.0.zip
+      - name: نشر Release v1.5.0
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          إصلاح توقف اللعبة: حذف السؤال المكرر وتحصين التحقق من بنك الأسئلة حتى لا يوقف سؤال واحد سيئ اللعبة كلها
+          إعادة تصميم واجهة سباق المعلومات بالكامل بأسلوب لعبة حديث متناسق في كل الشاشات (v1.5.0) مع الحفاظ على بنك الأسئلة وتحصين التحقق منه.
           EOF
-          gh release create v1.4.3 \
-            --title "سباق المعلومات v1.4.3" \
+          gh release create v1.5.0 \
+            --title "سباق المعلومات v1.5.0" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.4.3.apk sibaq-al-maalumat-web-v1.4.3.zip
+            sibaq-al-maalumat-v1.5.0.apk sibaq-al-maalumat-web-v1.5.0.zip
             

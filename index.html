@@ -3,23 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#071512" />
+    <meta name="theme-color" content="#05120e" />
     <meta name="description" content="سباق المعلومات — لعبة أسئلة إسلامية سريعة وممتعة" />
     <title>سباق المعلومات</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="features.css" />
   </head>
   <body>
     <div class="app-shell" id="appShell">
-      <div class="ambient ambient-one"></div>
-      <div class="ambient ambient-two"></div>
+      <div class="ambient ambient-one" aria-hidden="true"></div>
+      <div class="ambient ambient-two" aria-hidden="true"></div>
+
       <header class="topbar">
-        <button class="brand" data-action="home" aria-label="العودة إلى الصفحة الرئيسية">
+        <button type="button" class="brand" data-action="home" aria-label="العودة إلى الصفحة الرئيسية">
           <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 40 40" role="img"><path d="M20 3 34 11v18L20 37 6 29V11Z"/><path d="m12 18 8-5 8 5-8 5-8-5Z"/><path d="M20 23v9M12 18v9l8 5 8-5v-9"/></svg>
+            <svg viewBox="0 0 40 40" role="img">
+              <path d="M20 3 34 11v18L20 37 6 29V11Z" />
+              <path d="m12 18 8-5 8 5-8 5-8-5Z" />
+              <path d="M20 23v9M12 18v9l8 5 8-5v-9" />
+            </svg>
           </span>
-          <span class="brand-copy"><strong data-i18n="brandName">سباق المعلومات</strong><small data-i18n="brandTag">المعرفة أسرع مما تتوقع</small></span>
+          <span class="brand-copy">
+            <strong data-i18n="brandName">سباق المعلومات</strong>
+            <small data-i18n="brandTag">المعرفة أسرع مما تتوقع</small>
+          </span>
         </button>
+
         <div class="top-actions">
           <div class="lang-switch" id="langSwitch" role="group" aria-label="تبديل اللغة">
             <button type="button" class="lang-btn active" data-action="set-lang" data-lang="ar">AR</button>
@@ -28,14 +40,23 @@
           <button type="button" class="google-button" data-action="google-signin">تسجيل الدخول بـ Google</button>
           <button type="button" class="profile-mini" data-action="open-profile" aria-label="فتح ملف اللاعب">
             <span class="mini-avatar" id="miniAvatar">ض</span>
-            <span><b id="miniPlayerName">ضيف</b><small id="miniPlayerTitle">طالب علم</small></span>
+            <span class="profile-mini-meta">
+              <b id="miniPlayerName">ضيف</b>
+              <small id="miniPlayerTitle">طالب علم</small>
+            </span>
           </button>
-          <button class="icon-button" data-action="theme" aria-label="تبديل الوضع الليلي" title="تبديل الوضع الليلي">
-            <svg class="icon sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
-            <svg class="icon moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 14.4A8.5 8.5 0 0 1 9.6 3.7 8.5 8.5 0 1 0 20.3 14.4Z"/></svg>
+          <button type="button" class="icon-button" data-action="theme" aria-label="تبديل الوضع الليلي" title="تبديل الوضع الليلي">
+            <svg class="icon sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
+            </svg>
+            <svg class="icon moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20.3 14.4A8.5 8.5 0 0 1 9.6 3.7 8.5 8.5 0 1 0 20.3 14.4Z" />
+            </svg>
           </button>
         </div>
       </header>
+
       <main>
         <section class="screen active" id="homeScreen" aria-labelledby="homeTitle">
           <div class="home-grid">
@@ -45,23 +66,57 @@
                 <h1 id="homeTitle" data-i18n-html="heroTitle">كل إجابة صحيحة<br /><span>خطوة إلى الأمام.</span></h1>
                 <p data-i18n="heroDesc">اختبر معلوماتك الإسلامية في سباق سريع ضد الكمبيوتر. أجب بثقة، راقب مضمارك، واصل إلى الراية قبل منافسك.</p>
                 <div class="hero-actions">
-                  <button class="primary-button" data-action="start-race"><span data-i18n="startRace">ابدأ السباق</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-                  <button class="ghost-button guest-button" id="playAsGuestBtn" data-action="play-guest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg><span data-i18n="playGuest">العب كضيف</span></button>
-                  <button class="ghost-button" data-action="how-to-play"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7"/><path d="M12 17v.1"/></svg><span data-i18n="howToPlay">كيف تُلعب؟</span></button>
+                  <button type="button" class="primary-button" data-action="start-race">
+                    <span data-i18n="startRace">ابدأ السباق</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  </button>
+                  <button type="button" class="ghost-button guest-button" id="playAsGuestBtn" data-action="play-guest">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" /></svg>
+                    <span data-i18n="playGuest">العب كضيف</span>
+                  </button>
+                  <button type="button" class="ghost-button" data-action="how-to-play">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.8.3-.9 1-.9 1.7" /><path d="M12 17v.1" /></svg>
+                    <span data-i18n="howToPlay">كيف تُلعب؟</span>
+                  </button>
                 </div>
               </div>
               <div class="hero-visual" aria-hidden="true">
-                <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-                <div class="hero-medal"><span class="medal-shine"></span><svg viewBox="0 0 80 80"><path d="M27 11h26l-5 34a8 8 0 0 1-8 7H40a8 8 0 0 1-8-7Z"/><path d="M40 18a13 13 0 1 1 0 26 13 13 0 0 1 0-26Z"/><path d="m35 31 3.5 3.5L46 27"/></svg></div>
-                <span class="spark spark-1"></span><span class="spark spark-2"></span><span class="spark spark-3"></span>
-                <div class="hero-stat stat-top"><strong>10</strong><span data-i18n="questionsLabel">أسئلة</span></div>
-                <div class="hero-stat stat-bottom"><strong>15</strong><span data-i18n="secondsLabel">ثانية</span></div>
+                <div class="hero-ring hero-ring-outer"></div>
+                <div class="hero-ring hero-ring-inner"></div>
+                <div class="hero-medal">
+                  <span class="medal-shine"></span>
+                  <svg viewBox="0 0 80 80">
+                    <path d="M40 7 63 20v26L40 59 17 46V20Z" />
+                    <path d="M40 16a14 14 0 1 1 0 28 14 14 0 0 1 0-28Z" />
+                    <path d="m34.5 30 3.8 3.8L46.5 25.5" />
+                    <path d="M31 59v12l9-5 9 5V59" />
+                  </svg>
+                </div>
+                <div class="hero-stats-pair">
+                  <div class="hero-stat stat-top"><strong>10</strong><span data-i18n="questionsLabel">أسئلة</span></div>
+                  <div class="hero-stat-sep"></div>
+                  <div class="hero-stat stat-bottom"><strong>15</strong><span data-i18n="secondsLabel">ثانية</span></div>
+                </div>
               </div>
             </div>
+
             <aside class="stats-card glass-card">
-              <div class="card-heading"><span data-i18n="quickProfile">ملفك السريع</span><button class="more-button" data-action="open-profile" aria-label="مزيد من الإحصاءات">•••</button></div>
-              <div class="profile-row"><div class="large-avatar" id="largeAvatar">ض</div><div><h2 id="profilePlayerName">ضيف</h2><span class="rank-pill" id="profilePlayerTitle">طالب علم <i></i></span></div><strong class="level-number" id="profileLevel">01<small>مستوى</small></strong></div>
-              <div class="xp-row"><div><span data-i18n="xpLabel">الخبرة</span><b id="xpValue">120 / 250 XP</b></div><div class="progress-track"><span id="xpBar" style="width: 48%"></span></div></div>
+              <div class="card-heading">
+                <span data-i18n="quickProfile">ملفك السريع</span>
+                <button type="button" class="more-button" data-action="open-profile" aria-label="مزيد من الإحصاءات">•••</button>
+              </div>
+              <div class="profile-row">
+                <div class="large-avatar" id="largeAvatar">ض</div>
+                <div class="profile-identity">
+                  <h2 id="profilePlayerName">ضيف</h2>
+                  <span class="rank-pill" id="profilePlayerTitle">طالب علم <i></i></span>
+                </div>
+                <strong class="level-number" id="profileLevel">01<small>مستوى</small></strong>
+              </div>
+              <div class="xp-row">
+                <div class="xp-row-head"><span data-i18n="xpLabel">الخبرة</span><b id="xpValue">120 / 250 XP</b></div>
+                <div class="progress-track"><span id="xpBar" style="width: 48%"></span></div>
+              </div>
               <button type="button" class="league-mini-card" id="homeLeagueCard" data-action="open-leagues" aria-label="عرض نظام الدوريات وتقدّم الموسم">
                 <div class="league-mini-top">
                   <span class="league-mini-badge"><em id="homeLeagueIcon">🔩</em> <b id="homeLeagueName">دوري حديد</b></span>
@@ -70,49 +125,90 @@
                 <div class="progress-track league-track"><span id="homeLeagueBar" style="width: 0%"></span></div>
                 <div class="league-mini-foot"><span id="homeLeagueZone">نقاط الموسم · عرض الدوريات الـ 8 ›</span></div>
               </button>
-              <div class="stats-grid"><div><strong id="winsValue">7</strong><span data-i18n="winsLabel">انتصارات</span></div><div><strong id="accuracyValue">82%</strong><span data-i18n="accuracyLabel">دقة الإجابة</span></div><div><strong id="streakValue">4</strong><span data-i18n="bestStreakLabel">أفضل سلسلة</span></div></div>
-              <button type="button" class="daily-mini" data-action="start-daily"><span class="daily-icon"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/></svg></span><span id="dailyMiniText">لم تُكمل تحدي اليوم بعد</span><span class="daily-arrow">›</span></button>
+              <div class="stats-grid">
+                <div><strong id="winsValue">7</strong><span data-i18n="winsLabel">انتصارات</span></div>
+                <div><strong id="accuracyValue">82%</strong><span data-i18n="accuracyLabel">دقة الإجابة</span></div>
+                <div><strong id="streakValue">4</strong><span data-i18n="bestStreakLabel">أفضل سلسلة</span></div>
+              </div>
+              <button type="button" class="daily-mini" data-action="start-daily">
+                <span class="daily-icon">
+                  <svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" /></svg>
+                </span>
+                <span class="daily-copy" id="dailyMiniText">لم تُكمل تحدي اليوم بعد</span>
+                <span class="daily-arrow">›</span>
+              </button>
               <div class="home-quick-tools">
                 <button type="button" class="quick-tool-btn kids-toggle-btn" id="kidsToggleBtn" data-action="toggle-kids" aria-pressed="false">🧸 <span id="kidsToggleLabel">وضع الأطفال: إيقاف</span></button>
                 <button type="button" class="quick-tool-btn" id="openQuestsBtn" data-action="open-quests">🎯 <span id="questsMiniText">المهام: 0/3</span></button>
                 <button type="button" class="quick-tool-btn wheel-tool-btn" id="openWheelBtn" data-action="open-wheel">🎡 <span id="wheelMiniText">عجلة الحظ</span></button>
               </div>
-            <button class="ghost-button" data-action="open-our-apps" data-i18n="ourApps">📱 تطبيقاتنا</button></aside>
+              <button type="button" class="ghost-button apps-btn" data-action="open-our-apps" data-i18n="ourApps">📱 تطبيقاتنا</button>
+            </aside>
           </div>
-          <div class="section-head"><h2 data-i18n="chooseMode">اختر نمط اللعب</h2><span class="section-note" data-i18n="modeSectionNote">الحملة الفردية والتدريب والتحدي اليومي تعمل دون إنترنت — وأوضاع الأونلاين متاحة عند الاتصال</span></div>
+
+          <div class="section-head">
+            <div>
+              <h2 data-i18n="chooseMode">اختر نمط اللعب</h2>
+            </div>
+            <span class="section-note" data-i18n="modeSectionNote">الحملة الفردية والتدريب والتحدي اليومي تعمل دون إنترنت — وأوضاع الأونلاين متاحة عند الاتصال</span>
+          </div>
+
           <div class="mode-grid">
-            <article class="mode-card selected" data-action="start-race" tabindex="0" aria-label="ابدأ سباقاً سريعاً ضد الكمبيوتر">
-              <div class="mode-top"><span class="mode-icon mode-icon-one"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="mode-status ready" data-i18n="modeReady">جاهز</span></div>
+            <article class="mode-card selected" data-action="start-race" tabindex="0" role="button" aria-label="ابدأ سباقاً سريعاً ضد الكمبيوتر">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-one"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></span>
+                <span class="mode-status ready" data-i18n="modeReady">جاهز</span>
+              </div>
               <h3 data-i18n="modeTrainingTitle">تدريب ضد الكمبيوتر</h3>
               <p data-i18n="modeTrainingDesc">سباق 10 أسئلة ضد سراج، كل سؤال 15 ثانية.</p>
               <span class="mode-action" data-i18n-html="modePlayNow">العب الآن <b>←</b></span>
             </article>
-            <article class="mode-card campaign-mode-card" data-action="open-campaign" tabindex="0" aria-label="الحملة الفردية — 50 مستوى متدرجاً">
-              <div class="mode-top"><span class="mode-icon mode-icon-campaign"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 10 5l5 8 5-4-1 10Z"/><circle cx="10" cy="5" r="1.5"/></svg></span><span class="mode-status ready" id="campaignHomeBadge">50 مستوى · أوفلاين</span></div>
+
+            <article class="mode-card campaign-mode-card" data-action="open-campaign" tabindex="0" role="button" aria-label="الحملة الفردية — 50 مستوى متدرجاً">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-campaign"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 10 5l5 8 5-4-1 10Z" /><circle cx="10" cy="5" r="1.5" /></svg></span>
+                <span class="mode-status ready" id="campaignHomeBadge">50 مستوى · أوفلاين</span>
+              </div>
               <h3 data-i18n="modeCampaignTitle">الحملة الفردية</h3>
               <p id="campaignHomeDesc">50 مستوى متدرجاً من السهل إلى الصعب — افتح كل مستوى بإكمال سابقه.</p>
               <span class="mode-action" data-i18n-html="modeOpenMap">افتح الخريطة <b>←</b></span>
             </article>
-            <article class="mode-card" data-action="start-online" tabindex="0" aria-label="سباق سريع عبر الإنترنت">
-              <div class="mode-top"><span class="mode-icon mode-icon-two"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6Z"/></svg></span><span class="mode-status" data-i18n="modeOnlineStatus">مطابقة عشوائية</span></div>
+
+            <article class="mode-card" data-action="start-online" tabindex="0" role="button" aria-label="سباق سريع عبر الإنترنت">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-two"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6Z" /></svg></span>
+                <span class="mode-status" data-i18n="modeOnlineStatus">مطابقة عشوائية</span>
+              </div>
               <h3 data-i18n="modeOnlineTitle">سباق سريع عبر الإنترنت</h3>
               <p data-i18n="modeOnlineDesc">ابحث عن منافس عشوائي والعب ضده لحظياً (يعمل عند ربط Supabase).</p>
               <span class="mode-action" data-i18n-html="modeFindMatch">ابحث عن منافس <b>←</b></span>
             </article>
-            <article class="mode-card" data-action="start-tournament" tabindex="0" aria-label="بطولة الموسم">
-              <div class="mode-top"><span class="mode-icon mode-icon-three"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4"/></svg></span><span class="mode-status" data-i18n="modeTourneyStatus">3 جولات</span></div>
+
+            <article class="mode-card" data-action="start-tournament" tabindex="0" role="button" aria-label="بطولة الموسم">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-three"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0Z" /><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4" /></svg></span>
+                <span class="mode-status" data-i18n="modeTourneyStatus">3 جولات</span>
+              </div>
               <h3 data-i18n="modeTourneyTitle">بطولة الموسم</h3>
               <p data-i18n="modeTourneyDesc">ثلاث جولات إقصائية ضد سراج وحافظ وقارئ — فُز بها كلها لتصبح البطل.</p>
               <span class="mode-action" data-i18n-html="modeStartTourney">ابدأ البطولة <b>←</b></span>
             </article>
-            <article class="mode-card hifz-mode-card" data-action="open-hifz" tabindex="0" aria-label="اختبر حفظك للقرآن الكريم">
-              <div class="mode-top"><span class="mode-icon mode-icon-hifz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v17H6.5A2.5 2.5 0 0 0 4 22Z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v17h5.5a2.5 2.5 0 0 1 2.5 2Z"/></svg></span><span class="mode-status ready" id="hifzHomeBadge">0/12 محفوظ · أوفلاين</span></div>
+
+            <article class="mode-card hifz-mode-card" data-action="open-hifz" tabindex="0" role="button" aria-label="اختبر حفظك للقرآن الكريم">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-hifz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v17H6.5A2.5 2.5 0 0 0 4 22Z" /><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v17h5.5a2.5 2.5 0 0 1 2.5 2Z" /></svg></span>
+                <span class="mode-status ready" id="hifzHomeBadge">0/12 محفوظ · أوفلاين</span>
+              </div>
               <h3 data-i18n="modeHifzTitle">اختبر حفظك</h3>
               <p id="hifzHomeDesc" data-i18n="modeHifzDesc">أكمل الآية، رتّب الآيات، المتشابهات، وحدّد السورة — مع تتبّع السور المحفوظة.</p>
               <span class="mode-action" data-i18n-html="modeStartHifz">ابدأ الحفظ <b>←</b></span>
             </article>
-            <article class="mode-card" data-action="start-room" tabindex="0" aria-label="غرفة أصدقاء خاصة">
-              <div class="mode-top"><span class="mode-icon mode-icon-four"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="10" r="2.5"/><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5M14.5 20c.5-2.4 2-4 4-4.5"/></svg></span><span class="mode-status" data-i18n="modeRoomStatus">رمز ورابط دعوة</span></div>
+
+            <article class="mode-card" data-action="start-room" tabindex="0" role="button" aria-label="غرفة أصدقاء خاصة">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-four"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5" /><circle cx="17" cy="10" r="2.5" /><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5M14.5 20c.5-2.4 2-4 4-4.5" /></svg></span>
+                <span class="mode-status" data-i18n="modeRoomStatus">رمز ورابط دعوة</span>
+              </div>
               <h3 data-i18n="modeRoomTitle">غرفة الأصدقاء</h3>
               <p data-i18n="modeRoomDesc">أنشئ غرفة خاصة برمز ورابط دعوة، أو انضم إلى غرفة صديقك.</p>
               <div class="mode-card-footer">
@@ -120,19 +216,28 @@
                 <button type="button" class="spectate-inline-btn" data-action="spectate-room" data-i18n="spectateBtn">👁️ مشاهدة</button>
               </div>
             </article>
-            <article class="mode-card teams-mode-card" data-action="open-teams" tabindex="0" aria-label="الفرق والتحالفات">
-              <div class="mode-top"><span class="mode-icon mode-icon-teams"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V7Z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="mode-status ready" id="teamsHomeBadge">بلا فريق</span></div>
+
+            <article class="mode-card teams-mode-card" data-action="open-teams" tabindex="0" role="button" aria-label="الفرق والتحالفات">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-teams"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V7Z" /><path d="M9 12l2 2 4-4" /></svg></span>
+                <span class="mode-status ready" id="teamsHomeBadge">بلا فريق</span>
+              </div>
               <h3 data-i18n="modeTeamsTitle">الفرق والتحالفات</h3>
               <p id="teamsHomeDesc" data-i18n="modeTeamsDesc">أنشئ فريقك بشعار خاص أو انضم برمز، وخض معركة فريق ضد فريق.</p>
               <span class="mode-action" data-i18n-html="modeOpenTeams">إدارة الفريق <b>←</b></span>
             </article>
-            <article class="mode-card teacher-mode-card" data-action="open-teacher" tabindex="0" aria-label="وضع المعلم">
-              <div class="mode-top"><span class="mode-icon mode-icon-teacher"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 9h6M7 12h4"/></svg></span><span class="mode-status" data-i18n="modeTeacherStatus">رمز 5 أرقام</span></div>
+
+            <article class="mode-card teacher-mode-card" data-action="open-teacher" tabindex="0" role="button" aria-label="وضع المعلم">
+              <div class="mode-top">
+                <span class="mode-icon mode-icon-teacher"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4M7 9h6M7 12h4" /></svg></span>
+                <span class="mode-status" data-i18n="modeTeacherStatus">رمز 5 أرقام</span>
+              </div>
               <h3 data-i18n="modeTeacherTitle">وضع المعلم</h3>
               <p data-i18n="modeTeacherDesc">أنشئ جلسة حية برمز من 5 أرقام لطلابك وتابع إجاباتهم مباشرة.</p>
               <span class="mode-action" data-i18n-html="modeOpenTeacher">افتح الجلسة <b>←</b></span>
             </article>
           </div>
+
           <section class="discover-section glass-card" id="discoverSection" aria-labelledby="discoverTitle">
             <div class="discover-head">
               <div>
@@ -152,12 +257,21 @@
               </div>
             </div>
           </section>
+
           <div class="insight-banner">
-            <div><strong data-i18n="didYouKnow">هل تعلم؟</strong><p data-i18n="insightText">أول ما نزل من القرآن: ﴿اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ﴾ — سورة العلق، الآيات 1-5.</p></div>
-            <button class="ghost-button" data-action="open-sources" data-i18n="usedSources">المصادر المستخدمة</button>
+            <div class="insight-content">
+              <span class="insight-badge" aria-hidden="true">✦</span>
+              <div>
+                <strong data-i18n="didYouKnow">هل تعلم؟</strong>
+                <p data-i18n="insightText">أول ما نزل من القرآن: ﴿اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ﴾ — سورة العلق، الآيات 1-5.</p>
+              </div>
+            </div>
+            <button type="button" class="ghost-button" data-action="open-sources" data-i18n="usedSources">المصادر المستخدمة</button>
           </div>
-          <footer class="app-version-footer" id="appVersionFooter">سباق المعلومات · v1.4.3</footer>
+
+          <footer class="app-version-footer" id="appVersionFooter">سباق المعلومات · v1.5.0</footer>
         </section>
+
         <section class="screen campaign-screen" id="campaignScreen" hidden aria-labelledby="campaignTitle">
           <div class="campaign-header glass-card">
             <div class="campaign-header-top">
@@ -172,6 +286,7 @@
           </div>
           <div class="campaign-chapters" id="campaignChapters"></div>
         </section>
+
         <section class="screen hifz-screen" id="hifzScreen" hidden aria-labelledby="hifzTitle">
           <div class="campaign-header glass-card">
             <div class="campaign-header-top">
@@ -185,11 +300,15 @@
             <div class="hifz-modes-grid" id="hifzModesGrid"></div>
           </div>
           <article class="glass-card hifz-tracker-card">
-            <div class="card-heading"><span data-i18n="hifzTrackerTitle">تتبّع الأجزاء والسور القصيرة المحفوظة</span><small id="hifzSavedCounter">0 / 12 محفوظ</small></div>
+            <div class="card-heading">
+              <span data-i18n="hifzTrackerTitle">تتبّع الأجزاء والسور القصيرة المحفوظة</span>
+              <small id="hifzSavedCounter">0 / 12 محفوظ</small>
+            </div>
             <p class="hifz-tracker-note" data-i18n="hifzTrackerNote">اضغط على أي سورة أو جزء لتعليمها بعلامة «محفوظ ✓» وحفظ تقدّمك محلياً.</p>
             <div class="hifz-tracker-grid" id="hifzTrackerGrid"></div>
           </article>
         </section>
+
         <section class="screen teacher-screen" id="teacherScreen" hidden aria-labelledby="teacherTitle">
           <div class="campaign-header glass-card">
             <div class="campaign-header-top">
@@ -207,35 +326,85 @@
           <div id="teacherHostPanel" class="teacher-panel"></div>
           <div id="teacherStudentPanel" class="teacher-panel" hidden></div>
         </section>
+
         <section class="screen race-screen" id="raceScreen" hidden aria-labelledby="raceTitle">
           <div class="race-topline">
-            <button class="quit-button" data-action="quit-race" data-i18n="endRace">إنهاء السباق</button>
-            <div class="race-heading"><span class="eyebrow" id="raceEyebrow">تدريب محلي · سباق جديد</span><h1 class="race-title" id="raceTitle"><span data-i18n="questionWord">السؤال</span> <span id="questionNumber">1</span> <span data-i18n="ofWord">من</span> <span id="questionTotal">10</span></h1></div>
-            <div class="race-chips"><span class="streak-chip">🔥 <span id="raceStreak">0</span></span><span class="question-chip"><span id="answeredCount">0</span>/<span id="answeredTotal">10</span> <span id="raceCompletedLabel" data-i18n="completedWord">مكتملة</span></span></div>
+            <button type="button" class="quit-button" data-action="quit-race" data-i18n="endRace">إنهاء السباق</button>
+            <div class="race-heading">
+              <span class="eyebrow" id="raceEyebrow">تدريب محلي · سباق جديد</span>
+              <h1 class="race-title" id="raceTitle">
+                <span data-i18n="questionWord">السؤال</span> <span id="questionNumber">1</span> <span data-i18n="ofWord">من</span> <span id="questionTotal">10</span>
+              </h1>
+            </div>
+            <div class="race-chips">
+              <span class="streak-chip">🔥 <span id="raceStreak">0</span></span>
+              <span class="question-chip"><span id="answeredCount">0</span>/<span id="answeredTotal">10</span> <span id="raceCompletedLabel" data-i18n="completedWord">مكتملة</span></span>
+            </div>
           </div>
+
           <div class="kids-banner" id="kidsModeBanner" hidden>🧸 وضع الأطفال نشط — أسئلة سهلة ومشجّعة</div>
           <div class="spectator-banner" id="spectatorBanner" hidden>👁️ وضع المشاهدة المباشر — تتابع السباق دون مشاركة في الإجابة</div>
           <div class="team-battle-banner" id="teamBattleBanner" hidden></div>
           <div class="tiebreak-banner" id="tiebreakBanner" hidden>⚡ سؤال فاصل!</div>
+
           <div class="race-board glass-card">
             <div class="race-board-top">
-              <div class="race-meta"><span class="category-chip" id="questionCategory">القرآن</span><span class="difficulty-chip" id="questionDifficulty">سهل</span></div>
-              <div class="timer-ring" id="timerRing"><svg class="timer-svg" viewBox="0 0 72 72" aria-hidden="true"><circle class="timer-track" cx="36" cy="36" r="32"/><circle class="timer-progress" cx="36" cy="36" r="32"/></svg><span class="timer-value" id="timerValue">15</span></div>
+              <div class="race-meta">
+                <span class="category-chip" id="questionCategory">القرآن</span>
+                <span class="difficulty-chip" id="questionDifficulty">سهل</span>
+              </div>
+              <div class="timer-ring" id="timerRing" aria-live="off">
+                <svg class="timer-svg" viewBox="0 0 72 72" aria-hidden="true">
+                  <circle class="timer-track" cx="36" cy="36" r="32" />
+                  <circle class="timer-progress" cx="36" cy="36" r="32" />
+                </svg>
+                <span class="timer-value" id="timerValue">15</span>
+              </div>
             </div>
+
             <div class="track-area">
-              <div class="race-lane">
-                <div class="lane-head"><span class="race-avatar bot-avatar" id="opponentAvatar">س</span><div class="lane-name"><b id="opponentName">سراج</b><small id="opponentRoleLabel" data-i18n="opponentRole">الخصم</small></div><strong class="lane-score" id="opponentScore">0</strong></div>
-                <div class="track-line"><div class="track-glow"></div><span class="runner" id="opponentRunner">🏇</span></div>
+              <div class="finish-line" aria-hidden="true"><span>🏁</span></div>
+              <div class="race-lane opponent-lane">
+                <div class="lane-head">
+                  <span class="race-avatar bot-avatar" id="opponentAvatar">س</span>
+                  <div class="lane-name">
+                    <b id="opponentName">سراج</b>
+                    <small id="opponentRoleLabel" data-i18n="opponentRole">الخصم</small>
+                  </div>
+                  <strong class="lane-score" id="opponentScore">0</strong>
+                </div>
+                <div class="track-line">
+                  <div class="track-glow"></div>
+                  <span class="runner opponent-runner" id="opponentRunner" aria-hidden="true">🏇</span>
+                </div>
               </div>
-              <div class="race-lane">
-                <div class="lane-head"><span class="race-avatar player-avatar" id="playerAvatar">م</span><div class="lane-name"><b data-i18n="youLabel">أنت</b><small id="racePlayerTitle">طالب علم</small></div><strong class="lane-score" id="playerScore">0</strong></div>
-                <div class="track-line"><div class="track-glow"></div><span class="runner" id="playerRunner">🏇</span></div>
+
+              <div class="race-lane player-lane">
+                <div class="lane-head">
+                  <span class="race-avatar player-avatar" id="playerAvatar">م</span>
+                  <div class="lane-name">
+                    <b data-i18n="youLabel">أنت</b>
+                    <small id="racePlayerTitle">طالب علم</small>
+                  </div>
+                  <strong class="lane-score" id="playerScore">0</strong>
+                </div>
+                <div class="track-line">
+                  <div class="track-glow"></div>
+                  <span class="runner player-runner" id="playerRunner" aria-hidden="true">🏇</span>
+                </div>
               </div>
-              <div class="track-ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+              <div class="track-ticks" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
             </div>
           </div>
+
           <article class="question-card glass-card" id="questionCard">
-            <div class="question-top"><span class="question-type" id="questionType">اختيار من متعدد</span><button class="source-button" data-action="show-question-source" data-i18n="sourceBtn">المصدر</button></div>
+            <div class="question-top">
+              <span class="question-type" id="questionType">اختيار من متعدد</span>
+              <button type="button" class="source-button" data-action="show-question-source" data-i18n="sourceBtn">المصدر</button>
+            </div>
             <div class="translation-notice" id="questionTranslationNotice" hidden></div>
             <h2 id="questionText"></h2>
             <p class="arabic-companion" id="questionArabicCompanion" dir="rtl" hidden></p>
@@ -262,43 +431,83 @@
               <button type="button" class="primary-button next-question-button" id="nextQuestionBtn" data-action="next-question">السؤال التالي ←</button>
             </div>
           </article>
+
           <div class="race-footer">
-            <div class="booster-area"><span><em data-i18n="boostersLabel">تعزيزاتك</em> <small data-i18n="oncePerRace">مرة واحدة في كل سباق</small></span><div class="booster-list"><button type="button" class="booster" id="powerSkip" data-action="use-power-skip"><span>↷</span> <em data-i18n="boosterSkip">تخطّ</em> <b class="booster-count" id="powerSkipCount">1</b></button><button type="button" class="booster" id="powerFreeze" data-action="use-power-freeze"><span>❄️</span> <em data-i18n="boosterFreeze">تجميد</em> <b class="booster-count" id="powerFreezeCount">1</b></button><button type="button" class="booster" id="powerDouble" data-action="use-power-double"><span>×2</span> <em data-i18n="boosterDouble">مضاعفة</em> <b class="booster-count" id="powerDoubleCount">1</b></button></div></div>
+            <div class="booster-area">
+              <span class="booster-heading"><em data-i18n="boostersLabel">تعزيزاتك</em> <small data-i18n="oncePerRace">مرة واحدة في كل سباق</small></span>
+              <div class="booster-list">
+                <button type="button" class="booster" id="powerSkip" data-action="use-power-skip"><span>↷</span> <em data-i18n="boosterSkip">تخطّ</em> <b class="booster-count" id="powerSkipCount">1</b></button>
+                <button type="button" class="booster" id="powerFreeze" data-action="use-power-freeze"><span>❄️</span> <em data-i18n="boosterFreeze">تجميد</em> <b class="booster-count" id="powerFreezeCount">1</b></button>
+                <button type="button" class="booster" id="powerDouble" data-action="use-power-double"><span>×2</span> <em data-i18n="boosterDouble">مضاعفة</em> <b class="booster-count" id="powerDoubleCount">1</b></button>
+              </div>
+            </div>
             <p class="race-tip" data-i18n="raceTip">أجب قبل الخصم لتحصل على 10 نقاط بدلاً من 5.</p>
           </div>
         </section>
+
         <section class="screen result-screen" id="resultScreen" hidden aria-labelledby="resultTitle">
           <article class="result-card glass-card">
-            <div class="confetti-layer" id="confettiLayer"></div>
-            <span class="result-badge">🏆</span>
+            <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+            <span class="result-badge" aria-hidden="true">🏆</span>
             <span class="eyebrow" id="resultEyebrow">انتصار ذهبي</span>
             <h1 id="resultTitle">أحسنت!</h1>
             <p id="resultSubtitle">سرعتك صنعت الفارق. واصلت حتى النهاية.</p>
             <div class="companion-bubble" id="resultCompanionBubble" hidden></div>
             <div class="result-score"><span data-i18n="pointsLabel">النقاط</span><strong id="finalScore">0</strong></div>
-            <div class="result-stats"><div><strong id="finalCorrect">0/10</strong><span data-i18n="correctAnswersLabel">إجابات صحيحة</span></div><div><strong id="finalAccuracy">0%</strong><span data-i18n="accuracyLabel">دقة الإجابة</span></div><div><strong id="finalSpeed">—</strong><span data-i18n="avgTimeLabel">متوسط زمن الإجابة</span></div></div>
-<div class="result-actions"><button class="primary-button" id="resultPrimaryBtn" data-action="start-race">إعادة المباراة</button><button class="ghost-button" id="resultCampaignBtn" data-action="open-campaign" hidden data-i18n="campaignMapBtn">خريطة الحملة</button><button class="ghost-button" id="resultHifzBtn" data-action="open-hifz" hidden data-i18n="hifzBackBtn">اختبر حفظك</button><button class="ghost-button" id="shareResultBtn" data-action="share-result" data-i18n="shareResultBtn">شارك النتيجة</button><button class="ghost-button" data-action="home" data-i18n="backHome">العودة للرئيسية</button></div>
+            <div class="result-stats">
+              <div><strong id="finalCorrect">0/10</strong><span data-i18n="correctAnswersLabel">إجابات صحيحة</span></div>
+              <div><strong id="finalAccuracy">0%</strong><span data-i18n="accuracyLabel">دقة الإجابة</span></div>
+              <div><strong id="finalSpeed">—</strong><span data-i18n="avgTimeLabel">متوسط زمن الإجابة</span></div>
+            </div>
+            <div class="result-actions">
+              <button type="button" class="primary-button" id="resultPrimaryBtn" data-action="start-race">إعادة المباراة</button>
+              <button type="button" class="ghost-button" id="resultCampaignBtn" data-action="open-campaign" hidden data-i18n="campaignMapBtn">خريطة الحملة</button>
+              <button type="button" class="ghost-button" id="resultHifzBtn" data-action="open-hifz" hidden data-i18n="hifzBackBtn">اختبر حفظك</button>
+              <button type="button" class="ghost-button" id="shareResultBtn" data-action="share-result" data-i18n="shareResultBtn">شارك النتيجة</button>
+              <button type="button" class="ghost-button" data-action="home" data-i18n="backHome">العودة للرئيسية</button>
+            </div>
           </article>
         </section>
       </main>
+
       <nav class="bottom-nav" aria-label="التنقل الرئيسي">
-        <button class="nav-item active" data-action="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z"/></svg><span data-i18n="navHome">الرئيسية</span></button>
-        <button class="nav-item" data-action="start-race"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4"/></svg><span data-i18n="navRace">السباق</span></button>
-        <button class="nav-main" data-action="start-race" aria-label="ابدأ سباقاً جديداً"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5v13l11-6.5Z"/></svg><span data-i18n="navStart">ابدأ</span></button>
-        <button class="nav-item" data-action="open-leaderboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span data-i18n="navRanks">الترتيب</span></button>
-        <button class="nav-item" data-action="open-profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg><span data-i18n="navProfile">ملفي</span></button>
+        <button type="button" class="nav-item active" data-action="home" data-nav="home">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z" /></svg>
+          <span data-i18n="navHome">الرئيسية</span>
+        </button>
+        <button type="button" class="nav-item" data-action="open-campaign" data-nav="campaign">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 10 5l5 8 5-4-1 10Z" /><circle cx="10" cy="5" r="1.5" /></svg>
+          <span data-i18n="modeCampaignTitle">الحملة الفردية</span>
+        </button>
+        <button type="button" class="nav-main" data-action="start-race" aria-label="ابدأ سباقاً جديداً">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5v13l11-6.5Z" /></svg>
+          <span data-i18n="navStart">ابدأ</span>
+        </button>
+        <button type="button" class="nav-item" data-action="open-leaderboard" data-nav="leaderboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg>
+          <span data-i18n="navRanks">الترتيب</span>
+        </button>
+        <button type="button" class="nav-item" data-action="open-profile" data-nav="profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" /></svg>
+          <span data-i18n="navProfile">ملفي</span>
+        </button>
       </nav>
+
       <div class="toast" id="toast" role="status"><span id="toastText"></span></div>
+
       <div class="modal-backdrop" id="modalBackdrop" hidden>
-        <div class="modal-card" role="dialog" aria-modal="true">
-          <button class="modal-close" data-action="close-modal" aria-label="إغلاق">×</button>
-          <div class="modal-symbol"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+          <button type="button" class="modal-close" data-action="close-modal" aria-label="إغلاق">×</button>
+          <div class="modal-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9" /><path d="M12 7v5l3 2" /></svg>
+          </div>
           <h2 id="modalTitle"></h2>
           <div id="modalBody"></div>
-          <button class="primary-button modal-primary" data-action="close-modal" data-i18n="modalGotIt">فهمت</button>
+          <button type="button" class="primary-button modal-primary" data-action="close-modal" data-i18n="modalGotIt">فهمت</button>
         </div>
       </div>
     </div>
+
     <script src="questions.js"></script>
     <script src="config.js"></script>
     <script type="module" src="app.js"></script>

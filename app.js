@@ -1071,7 +1071,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.4.3', 'Knowledge Race · v1.4.3');
+    verFooter.textContent = tr('سباق المعلومات · v1.5.0', 'Knowledge Race · v1.5.0');
   }
   updateHomeStats();
   applyKidsMode();
@@ -2586,10 +2586,17 @@ function startSpectatorMode(roomCode = '') {
   }
 }
 
-function openSpectatorModal() {
+async function openSpectatorModal() {
   const rooms = (() => { try { return JSON.parse(localStorage.getItem(ROOMS_KEY) || '[]'); } catch (e) { return []; } })();
   const suggested = rooms.length ? rooms[rooms.length - 1].code : 'LIVE01';
-  const code = (prompt(tr('أدخل رمز الغرفة للمشاهدة المباشرة:', 'Enter room code to watch live:'), suggested) || '').trim().toUpperCase();
+  const raw = await openPrompt(
+    tr('👁️ مشاهدة سباق مباشر', '👁️ Watch a Live Race'),
+    tr('أدخل رمز الغرفة للمشاهدة المباشرة:', 'Enter room code to watch live:'),
+    suggested,
+    'LIVE01',
+    tr('مشاهدة الآن', 'Watch Now'),
+  );
+  const code = (raw || '').trim().toUpperCase();
   if (!code) return;
   closeModal();
   startSpectatorMode(code);
@@ -2882,6 +2889,9 @@ function showScreen(name) {
     const active = screen.id === `${name}Screen`;
     screen.classList.toggle('active', active);
     screen.hidden = !active;
+  });
+  document.querySelectorAll('.bottom-nav .nav-item[data-nav]').forEach((item) => {
+    item.classList.toggle('active', item.dataset.nav === name);
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -3409,6 +3419,13 @@ function showAnswerExplanationCard(question) {
   if (!ui.explanationCard || !question) return;
   updateExplanationCardBody(question);
   ui.explanationCard.hidden = false;
+  window.requestAnimationFrame(() => {
+    if (!ui.explanationCard || ui.explanationCard.hidden) return;
+    const rect = ui.explanationCard.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 92) {
+      ui.explanationCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
 
   const isLast = state.index + 1 >= state.questions.length;
   const baseLabel = isLast ? tr('عرض النتيجة ←', 'View Results →') : tr('السؤال التالي ←', 'Next Question →');
@@ -3923,12 +3940,58 @@ function openConfirm(title, body, primaryLabel, secondaryLabel) {
     let secondary = ui.modal.querySelector('.modal-secondary');
     if (!secondary) {
       secondary = document.createElement('button');
+      secondary.type = 'button';
       secondary.className = 'ghost-button modal-secondary';
       secondary.dataset.action = 'confirm-secondary';
       ui.modal.querySelector('.modal-card').appendChild(secondary);
     }
     secondary.textContent = secondaryLabel;
     secondary.hidden = false;
+  });
+}
+
+function openPrompt(title, message, defaultValue = '', placeholder = '', confirmLabel = '') {
+  return new Promise((resolve) => {
+    confirmResolver = (confirmed) => {
+      if (confirmed !== true) {
+        resolve(null);
+        return;
+      }
+      const input = document.getElementById('modalPromptInput');
+      resolve(input ? input.value : '');
+    };
+    const body = `
+      <div class="modal-prompt-wrap">
+        <p>${escapeHtml(message)}</p>
+        <input type="text" id="modalPromptInput" class="modal-prompt-input" value="${escapeHtml(defaultValue)}" placeholder="${escapeHtml(placeholder)}" />
+      </div>
+    `;
+    openModal(title, body, 'info');
+    ui.modalPrimary.textContent = confirmLabel || tr('تأكيد', 'Confirm');
+    ui.modalPrimary.dataset.action = 'confirm-primary';
+    let secondary = ui.modal.querySelector('.modal-secondary');
+    if (!secondary) {
+      secondary = document.createElement('button');
+      secondary.type = 'button';
+      secondary.className = 'ghost-button modal-secondary';
+      secondary.dataset.action = 'confirm-secondary';
+      ui.modal.querySelector('.modal-card').appendChild(secondary);
+    }
+    secondary.textContent = tr('إلغاء', 'Cancel');
+    secondary.hidden = false;
+    window.setTimeout(() => {
+      const input = document.getElementById('modalPromptInput');
+      if (input) {
+        input.focus();
+        input.select();
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            closeModal(true);
+          }
+        };
+      }
+    }, 30);
   });
 }
 
@@ -3978,7 +4041,7 @@ async function openOnlineQuick() {
     return;
   }
   if (!SUPABASE_CONFIGURED) {
-    openModal(tr('🌐 مطابقة عشوائية', '🌐 Random Match'), tr('<p>جارٍ البحث عن خصم متصل…</p>', '<p>Searching for an online opponent…</p>'), 'info');
+    openModal(tr('🌐 مطابقة عشوائية', '🌐 Random Match'), `<div class="modal-loading"><span class="modal-spinner" aria-hidden="true"></span><p>${tr('جارٍ البحث عن خصم متصل…', 'Searching for an online opponent…')}</p></div>`, 'info');
     window.setTimeout(async () => {
       if (ui.modal.hidden) return;
       const playBot = await openConfirm(
@@ -3998,7 +4061,7 @@ async function openOnlineQuick() {
   }
   const signedIn = await ensureSupabaseSignedIn('random');
   if (!signedIn) { showToast(tr('سجّل الدخول بـ Google أولاً للمطابقة العشوائية', 'Sign in with Google first for random matchmaking')); return; }
-  openModal(tr('🌐 مطابقة عشوائية', '🌐 Random Match'), tr('<p>جارٍ البحث عن خصم متصل عبر Supabase…</p>', '<p>Searching for an online opponent via Supabase…</p>'), 'info');
+  openModal(tr('🌐 مطابقة عشوائية', '🌐 Random Match'), `<div class="modal-loading"><span class="modal-spinner" aria-hidden="true"></span><p>${tr('جارٍ البحث عن خصم متصل عبر Supabase…', 'Searching for an online opponent via Supabase…')}</p></div>`, 'info');
   const found = await sbFindRandomRoom();
   if (found.ok && found.room) {
     const matchRes = await sbCreateMatch(found.room, found.room.host_id, 'random');
@@ -4063,7 +4126,14 @@ async function openRoom() {
         startSpectatorMode(code);
       }
     } else if (choice === 'secondary') {
-      const code = (prompt(tr('أدخل رمز الغرفة (6 أحرف):', 'Enter 6-character room code:')) || '').trim().toUpperCase();
+      const rawCode = await openPrompt(
+        tr('🚪 الانضمام إلى غرفة', '🚪 Join a Room'),
+        tr('أدخل رمز الغرفة (6 أحرف):', 'Enter 6-character room code:'),
+        '',
+        'ABC123',
+        tr('انضمام', 'Join'),
+      );
+      const code = (rawCode || '').trim().toUpperCase();
       if (code) joinRoomByCode(code);
     }
     return;
@@ -4096,14 +4166,21 @@ async function openRoom() {
     if (copy === true) {
       try { await navigator.clipboard.writeText(link); showToast(tr('تم نسخ رابط الدعوة', 'Invite link copied')); } catch (error) { /* clipboard unavailable */ }
     }
-    openModal(tr('🚪 بانتظار صديقك…', '🚪 Waiting for Friend…'), tr(`<p>الغرفة <b>${code}</b> جاهزة. بانتظار انضمام صديقك (حتى دقيقتين)…</p>`, `<p>Room <b>${code}</b> is ready. Waiting for your friend to join (up to 2 min)…</p>`), 'info');
+    openModal(tr('🚪 بانتظار صديقك…', '🚪 Waiting for Friend…'), `<div class="modal-loading"><span class="modal-spinner" aria-hidden="true"></span><p>${tr(`الغرفة <b>${code}</b> جاهزة. بانتظار انضمام صديقك (حتى دقيقتين)…`, `Room <b>${code}</b> is ready. Waiting for your friend to join (up to 2 min)…`)}</p></div>`, 'info');
     const waited = await waitForOpponent(created.room, 120);
     if (!waited.ok || !waited.match) { closeModal(); showToast(tr('لم ينضم أحد إلى الغرفة بعد', 'No one joined the room yet')); return; }
     const oppName = await sbDisplayName(waited.match.player2_id);
     closeModal();
     startOnlineRace(created.room, waited.match, oppName, true);
   } else if (choice === 'secondary') {
-    const code = (prompt(tr('أدخل رمز الغرفة (6 أحرف):', 'Enter 6-character room code:')) || '').trim().toUpperCase();
+    const rawCode = await openPrompt(
+      tr('🚪 الانضمام إلى غرفة', '🚪 Join a Room'),
+      tr('أدخل رمز الغرفة (6 أحرف):', 'Enter 6-character room code:'),
+      '',
+      'ABC123',
+      tr('انضمام', 'Join'),
+    );
+    const code = (rawCode || '').trim().toUpperCase();
     if (code) joinRoomByCode(code);
   }
 }
@@ -4137,11 +4214,12 @@ async function joinRoomByCode(code) {
   startOnlineRace(res.room, matchRes.match, hostName, false);
 }
 async function openLeaderboard() {
+  const medalFor = (pos) => (pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `${pos}.`);
   const localRows = () => {
     const history = loadHistory().sort((a, b) => b.score - a.score).slice(0, 5);
     return history.length
-      ? history.map((h, i) => `<div class="source-item"><strong>${i + 1}. ${h.score} ${tr('نقطة', 'pts')}</strong><span>${h.mode || ''} · ${h.correct || 0} ${tr('إجابة صحيحة', 'correct')}</span></div>`).join('')
-      : tr('<p>لا نتائج بعد — العب سباقاً لتظهر نتيجتك هنا.</p>', '<p>No results yet — play a race to appear here.</p>');
+      ? history.map((h, i) => `<div class="source-item"><strong>${medalFor(i + 1)} ${h.score} ${tr('نقطة', 'pts')}</strong><span>${escapeHtml(h.mode || '')} · ${h.correct || 0} ${tr('إجابة صحيحة', 'correct')}</span></div>`).join('')
+      : `<div class="empty-state">${tr('لا نتائج بعد — العب سباقاً لتظهر نتيجتك هنا.', 'No results yet — play a race to appear here.')}</div>`;
   };
   if (!isAppOnline() || !SUPABASE_CONFIGURED || !supabaseUser || supabaseUser.is_anonymous) {
     openModal(
@@ -4151,15 +4229,19 @@ async function openLeaderboard() {
     );
     return;
   }
-  openModal(tr('🏆 لوحة الصدارة', '🏆 Leaderboard'), tr('<p>جارٍ تحميل الصدارة العالمية…</p>', '<p>Loading global leaderboard…</p>'), 'info');
+  openModal(
+    tr('🏆 لوحة الصدارة', '🏆 Leaderboard'),
+    `<div class="modal-loading"><span class="modal-spinner" aria-hidden="true"></span><p>${tr('جارٍ تحميل الصدارة العالمية…', 'Loading global leaderboard…')}</p></div>`,
+    'info',
+  );
   const res = await sbFetchLeaderboard();
   if (!res.ok) {
-    openModal(tr('🏆 لوحة الصدارة (محلية)', '🏆 Leaderboard (Local)'), `<div class="source-list">${localRows()}</div><p>${tr('تعذّر تحميل الصدارة العالمية:', 'Could not load global leaderboard:')} ${res.reason || ''}</p>`, 'info');
+    openModal(tr('🏆 لوحة الصدارة (محلية)', '🏆 Leaderboard (Local)'), `<div class="source-list">${localRows()}</div><p>${tr('تعذّر تحميل الصدارة العالمية:', 'Could not load global leaderboard:')} ${escapeHtml(res.reason || '')}</p>`, 'info');
     return;
   }
   const rows = res.rows.length
-    ? res.rows.map((r) => `<div class="source-item"><strong>${r.rank_position || ''}. ${r.display_name || r.username || tr('لاعب', 'Player')}</strong><span>${r.total_score || 0} ${tr('نقطة', 'pts')} · ${r.games_won || 0} ${tr('فوزاً', 'wins')} · ${tr('أفضل سلسلة', 'best streak')} ${r.best_streak || 0}</span></div>`).join('')
-    : tr('<p>لا لاعبين بعد في الصدارة العالمية — كُن أولهم!</p>', '<p>No players on the global leaderboard yet — be the first!</p>');
+    ? res.rows.map((r, idx) => `<div class="source-item"><strong>${medalFor(r.rank_position || idx + 1)} ${escapeHtml(r.display_name || r.username || tr('لاعب', 'Player'))}</strong><span>${r.total_score || 0} ${tr('نقطة', 'pts')} · ${r.games_won || 0} ${tr('فوزاً', 'wins')} · ${tr('أفضل سلسلة', 'best streak')} ${r.best_streak || 0}</span></div>`).join('')
+    : `<div class="empty-state">${tr('لا لاعبين بعد في الصدارة العالمية — كُن أولهم!', 'No players on the global leaderboard yet — be the first!')}</div>`;
   try {
     localStorage.setItem(DISCOVER_LB_CACHE_KEY, JSON.stringify((res.rows || []).slice(0, 5)));
     renderDiscoverSection();
@@ -4230,9 +4312,17 @@ function openProfile() {
     const achDesc = isEn() && ACH_EN[a.id] ? ACH_EN[a.id].desc : a.desc;
     return `<div class="ach-item ${unlocked ? 'unlocked' : 'locked'}"><span>${a.icon}</span><div><strong>${achTitle}</strong><small>${achDesc}</small></div><b>${unlocked ? '✓' : '🔒'}</b></div>`;
   }).join('');
+  const kpiGrid = `
+    <div class="profile-kpi-grid">
+      <div class="profile-kpi-card"><strong>${profile.xp}</strong><span>${tr('نقاط الخبرة', 'XP')}</span></div>
+      <div class="profile-kpi-card"><strong>${profile.games}</strong><span>${tr('السباقات', 'Races')}</span></div>
+      <div class="profile-kpi-card"><strong>${profile.wins}</strong><span>${tr('الانتصارات', 'Wins')}</span></div>
+      <div class="profile-kpi-card"><strong>${profile.bestStreak}</strong><span>${tr('أفضل سلسلة', 'Best Streak')}</span></div>
+    </div>
+  `;
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p><p>${tr('النقاط', 'XP')}: ${profile.xp} XP · ${tr('السباقات', 'Races')}: ${profile.games} · ${tr('الانتصارات', 'Wins')}: ${profile.wins} · ${tr('أفضل سلسلة', 'Best Streak')}: ${profile.bestStreak}</p>${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.4.3', 'Version v1.4.3')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.0', 'Version v1.5.0')}</small></p></div>`,
     'info',
   );
 }
@@ -4388,6 +4478,7 @@ function burstSparkles() {
 function toggleTheme() {
   const next = ui.shell.dataset.theme === 'light' ? 'dark' : 'light';
   ui.shell.dataset.theme = next;
+  document.documentElement.dataset.theme = next;
   localStorage.setItem('sibaq-theme', next);
   showToast(next === 'light' ? tr('تم تفعيل الوضع الفاتح', 'Light mode enabled') : tr('تم تفعيل الوضع الليلي', 'Dark mode enabled'));
 }
@@ -4430,8 +4521,15 @@ function bindEvents() {
         const codeEl = document.getElementById('teamCodeInput');
         joinTeamByCode(codeEl ? codeEl.value : '');
       } else if (action === 'add-team-member') {
-        const mName = prompt(tr('اسم العضو الجديد في الفريق:', 'New teammate name:'));
-        if (mName && mName.trim()) addLocalTeamMember(mName.trim());
+        openPrompt(
+          tr('➕ إضافة عضو للفريق', '➕ Add Team Member'),
+          tr('اسم العضو الجديد في الفريق:', 'New teammate name:'),
+          '',
+          tr('اسم العضو', 'Member name'),
+          tr('إضافة', 'Add'),
+        ).then((mName) => {
+          if (mName && mName.trim()) addLocalTeamMember(mName.trim());
+        });
       } else if (action === 'copy-team-code' && teamState) {
         try { navigator.clipboard.writeText(teamState.code); } catch (e) { /* ignore */ }
         showToast(tr(`تم نسخ رمز الفريق: ${teamState.code}`, `Copied team code: ${teamState.code}`));
@@ -4480,8 +4578,20 @@ function bindEvents() {
       else if (action === 'link-gmail') linkGmailAccount();
       else if (action === 'enable-notifications') enableNotifications();
       else if (action === 'edit-name') {
-        const name = prompt(tr('ما اسمك؟', 'What is your name?'), displayProfileName());
-        if (name && name.trim()) { profile.name = name.trim(); saveProfile(); updateHomeStats(); openProfile(); }
+        openPrompt(
+          tr('✏️ تعديل اسم اللاعب', '✏️ Edit Player Name'),
+          tr('ما اسمك؟', 'What is your name?'),
+          displayProfileName(),
+          tr('أدخل اسمك', 'Enter your name'),
+          tr('حفظ', 'Save'),
+        ).then((name) => {
+          if (name && name.trim()) {
+            profile.name = name.trim();
+            saveProfile();
+            updateHomeStats();
+            openProfile();
+          }
+        });
       } else if (action === 'use-power-skip') usePower('skip');
       else if (action === 'use-power-freeze') usePower('freeze');
       else if (action === 'use-power-double') usePower('double');
@@ -4499,6 +4609,10 @@ function bindEvents() {
   });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !ui.modal.hidden) closeModal();
+    if ((event.key === 'Enter' || event.key === ' ') && event.target && event.target.matches('[role="button"][data-action]')) {
+      event.preventDefault();
+      event.target.click();
+    }
   });
   if (teacherBroadcast) {
     teacherBroadcast.onmessage = (event) => {
@@ -4531,7 +4645,9 @@ function boot() {
   refreshSupabaseSession();
   mergeRemoteQuestions();
   const savedTheme = localStorage.getItem('sibaq-theme');
-  ui.shell.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+  const initialTheme = savedTheme === 'light' ? 'light' : 'dark';
+  ui.shell.dataset.theme = initialTheme;
+  document.documentElement.dataset.theme = initialTheme;
   applyKidsMode();
   applyLanguageToDOM();
   bindEvents();

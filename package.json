@@ -1,9 +1,12 @@
 {
   "name": "sibaq-al-maalumat",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
     "build": "node build.mjs",
+    "lint": "node --check server.mjs && node --check build.mjs && node --check app.js && node --check questions.js && node --check config.js",
     "cap:sync": "npx cap sync"
   },
   "dependencies": {
