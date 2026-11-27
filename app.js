@@ -47,6 +47,104 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
+function isExcludedPlayerName(name) {
+  if (!name) return false;
+  const str = String(name).trim();
+  const clean = str.replace(/[\s\u200B-\u200D\uFEFF_\-ـ]+/g, '').toLowerCase();
+  if (clean === 'مؤيدعبدو' || clean === 'مؤيدعبد' || clean === 'muayyadabdo' || clean === 'moayedabdo') return true;
+  if (str.includes('مؤيد') && str.includes('عبدو')) return true;
+  if (/mo[ay]+ed/i.test(str) && /abdo/i.test(str)) return true;
+  return false;
+}
+
+function purgeExcludedUserData() {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith('sibaq-') || key.startsWith('ilmrace-')) {
+        const raw = localStorage.getItem(key);
+        if (raw && (raw.includes('مؤيد') && raw.includes('عبدو'))) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              if (isExcludedPlayerName(parsed.name) || isExcludedPlayerName(parsed.displayName)) {
+                parsed.name = 'ضيف';
+                if (parsed.google) parsed.google = null;
+                localStorage.setItem(key, JSON.stringify(parsed));
+              } else if (Array.isArray(parsed)) {
+                const filtered = parsed.filter((item) => {
+                  const n = item && (item.name || item.display_name || item.playerName || item.username);
+                  return !isExcludedPlayerName(n);
+                });
+                localStorage.setItem(key, JSON.stringify(filtered));
+              }
+            }
+          } catch (e) { /* ignore parse error */ }
+        }
+      }
+    }
+    if (typeof profile !== 'undefined' && profile && isExcludedPlayerName(profile.name)) {
+      profile.name = 'ضيف';
+      if (profile.google) profile.google = null;
+      if (typeof saveProfile === 'function') saveProfile();
+    }
+  } catch (err) {
+    console.warn('purgeExcludedUserData error:', err);
+  }
+}
+
+function getSupabaseRedirectUrl() {
+  const isNative = typeof window !== 'undefined' && Boolean(
+    (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ||
+    (window.location && (window.location.protocol === 'capacitor:' || (window.location.hostname === 'localhost' && !window.location.port)))
+  );
+  if (isNative) {
+    // Whitelisted Supabase redirect URL that routes to the published app and deep-links to native
+    return 'https://ali-awwww.github.io/sibaq-al-maalumat/';
+  }
+  return `${location.origin}${location.pathname}`;
+}
+
+async function handleIncomingAuthTokens(rawUrl) {
+  if (!rawUrl) return;
+  try {
+    const client = await getSupabaseClient();
+    if (!client || !client.auth) return;
+    let hash = '';
+    let search = '';
+    if (rawUrl.includes('#')) hash = rawUrl.split('#')[1];
+    if (rawUrl.includes('?')) search = rawUrl.split('?')[1].split('#')[0];
+    if (hash && (hash.includes('access_token=') || hash.includes('refresh_token='))) {
+      const params = new URLSearchParams(hash);
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if (access_token && refresh_token && typeof client.auth.setSession === 'function') {
+        await client.auth.setSession({ access_token, refresh_token });
+      }
+    }
+    if (search && search.includes('code=') && typeof client.auth.exchangeCodeForSession === 'function') {
+      const searchParams = new URLSearchParams(search);
+      const code = searchParams.get('code');
+      if (code) {
+        await client.auth.exchangeCodeForSession(code);
+      }
+    }
+    await refreshSupabaseSession();
+  } catch (err) {
+    console.warn('تعذّر معالجة جلسة الدخول من الرابط', err);
+  }
+}
+
+if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+  try {
+    window.Capacitor.Plugins.App.addListener('appUrlOpen', (event) => {
+      if (event && event.url) handleIncomingAuthTokens(event.url);
+    });
+  } catch (e) { /* ignore */ }
+}
+
 function isAppOnline() {
   return typeof navigator === 'undefined' ? true : navigator.onLine !== false;
 }
@@ -77,7 +175,15 @@ function getSupabaseClient() {
   if (!supabaseClientPromise) {
     supabaseClientPromise = import(SUPABASE_JS_URL)
       .then((mod) => {
-        supabaseClient = mod.createClient(SIBAQ_CONFIG.SUPABASE_URL, SIBAQ_CONFIG.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+        const storageEngine = typeof window !== 'undefined' && window.localStorage ? window.localStorage : undefined;
+        supabaseClient = mod.createClient(SIBAQ_CONFIG.SUPABASE_URL, SIBAQ_CONFIG.SUPABASE_ANON_KEY, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: storageEngine,
+          },
+        });
         return supabaseClient;
       })
       .catch((error) => {
@@ -93,8 +199,17 @@ async function refreshSupabaseSession() {
   const client = await getSupabaseClient();
   if (!client) return null;
   try {
-    const { data } = await client.auth.getSession();
-    supabaseUser = data && data.session ? data.session.user : null;
+    const { data, error } = await client.auth.getSession();
+    if (!error && data && data.session && data.session.user) {
+      supabaseUser = data.session.user;
+    } else if (typeof client.auth.refreshSession === 'function') {
+      try {
+        const refreshed = await client.auth.refreshSession();
+        if (refreshed && refreshed.data && refreshed.data.session) {
+          supabaseUser = refreshed.data.session.user;
+        }
+      } catch (err) { /* ignore */ }
+    }
     if (supabaseUser && !supabaseUser.is_anonymous) {
       await upsertSupabaseProfile();
       resumePendingSupabaseAction();
@@ -102,8 +217,18 @@ async function refreshSupabaseSession() {
     if (!authListenerRegistered) {
       authListenerRegistered = true;
       client.auth.onAuthStateChange(async (_event, session) => {
-        supabaseUser = session ? session.user : null;
-        if (supabaseUser && !supabaseUser.is_anonymous) await upsertSupabaseProfile();
+        if (session && session.user) {
+          if (supabaseUser && !supabaseUser.is_anonymous && session.user.is_anonymous) {
+            return;
+          }
+          supabaseUser = session.user;
+          if (!supabaseUser.is_anonymous) {
+            await upsertSupabaseProfile();
+            resumePendingSupabaseAction();
+          }
+        } else if (_event === 'SIGNED_OUT') {
+          supabaseUser = null;
+        }
       });
     }
   } catch (error) { console.warn('تعذّر استعادة جلسة Supabase', error); }
@@ -190,13 +315,15 @@ async function upsertSupabaseProfile() {
 }
 
 async function trySupabaseAnonymousSignIn() {
-  if (!SUPABASE_CONFIGURED || !isAppOnline() || supabaseUser) return false;
+  if (!SUPABASE_CONFIGURED || !isAppOnline() || (supabaseUser && !supabaseUser.is_anonymous)) return false;
   try {
     const client = await getSupabaseClient();
     if (!client || !client.auth || typeof client.auth.signInAnonymously !== 'function') return false;
     const { data, error } = await client.auth.signInAnonymously();
     if (!error && data && data.user) {
-      supabaseUser = data.user;
+      if (!supabaseUser || supabaseUser.is_anonymous) {
+        supabaseUser = data.user;
+      }
       return true;
     }
   } catch (error) {
@@ -209,8 +336,14 @@ async function signInWithGoogleSupabase() {
   if (!isAppOnline()) return { ok: false, reason: tr('هذا الوضع يحتاج اتصالاً بالإنترنت', 'This mode requires an internet connection') };
   const client = await getSupabaseClient();
   if (!client) return { ok: false, reason: tr('مكتبة Supabase غير متاحة', 'Supabase library unavailable') };
-  const redirectTo = `${location.origin}${location.pathname}`;
-  const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
+  const redirectTo = getSupabaseRedirectUrl();
+  const { error } = await client.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo,
+      queryParams: { access_type: 'offline', prompt: 'consent' },
+    },
+  });
   if (error) return { ok: false, reason: error.message };
   return { ok: true };
 }
@@ -243,7 +376,8 @@ async function sbDisplayName(userId) {
   if (!userId || !supabaseClient) return tr('خصم متصل', 'Online Opponent');
   try {
     const { data } = await supabaseClient.from('profiles').select('display_name,username').eq('id', userId).maybeSingle();
-    return (data && (data.display_name || data.username)) || tr('خصم متصل', 'Online Opponent');
+    const name = (data && (data.display_name || data.username)) || tr('خصم متصل', 'Online Opponent');
+    return isExcludedPlayerName(name) ? tr('خصم متصل', 'Online Opponent') : name;
   } catch (error) { return tr('خصم متصل', 'Online Opponent'); }
 }
 
@@ -361,9 +495,10 @@ async function startOnlineRace(room, match, opponentName, isHost) {
 async function sbFetchLeaderboard() {
   const client = await getSupabaseClient();
   if (!client || !supabaseUser) return { ok: false, reason: tr('سجّل الدخول بـ Google أولاً', 'Sign in with Google first') };
-  const { data, error } = await client.from('leaderboard').select('*').limit(10);
+  const { data, error } = await client.from('leaderboard').select('*').limit(25);
   if (error) return { ok: false, reason: error.message };
-  return { ok: true, rows: data || [] };
+  const cleanRows = (data || []).filter((r) => !isExcludedPlayerName(r.display_name) && !isExcludedPlayerName(r.username));
+  return { ok: true, rows: cleanRows.slice(0, 10) };
 }
 
 async function sbFetchRemoteQuestions() {
@@ -1071,7 +1206,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.5.1', 'Knowledge Race · v1.5.1');
+    verFooter.textContent = tr('سباق المعلومات · v1.5.2', 'Knowledge Race · v1.5.2');
   }
   updateHomeStats();
   applyKidsMode();
@@ -2208,7 +2343,7 @@ function renderDiscoverSection() {
       { name: tr('سراج (حافظ)', 'Siraj'), score: 420, wins: 6 },
       { name: tr('حفصة القارئة', 'Hafsah'), score: 340, wins: 5 },
       { name: tr('طارق المتسابق', 'Tariq'), score: 260, wins: 4 },
-    ];
+    ].filter((r) => !isExcludedPlayerName(r.name));
     const deduped = [];
     const seenNames = new Set();
     for (const row of combined) {
@@ -3439,17 +3574,10 @@ function showAnswerExplanationCard(question) {
   if (!ui.explanationCard || !question) return;
   updateExplanationCardBody(question);
   ui.explanationCard.hidden = false;
-  window.requestAnimationFrame(() => {
-    if (!ui.explanationCard || ui.explanationCard.hidden) return;
-    const rect = ui.explanationCard.getBoundingClientRect();
-    if (rect.bottom > window.innerHeight - 92) {
-      ui.explanationCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  });
 
   const isLast = state.index + 1 >= state.questions.length;
   const baseLabel = isLast ? tr('عرض النتيجة ←', 'View Results →') : tr('السؤال التالي ←', 'Next Question →');
-  let secondsLeft = 5;
+  let secondsLeft = 3;
   if (ui.nextQuestionBtn) ui.nextQuestionBtn.textContent = `${baseLabel} (${secondsLeft})`;
   clearInterval(state.nextCountdownTimer);
   state.nextCountdownTimer = window.setInterval(() => {
@@ -3519,7 +3647,7 @@ function scoreAnswer(isCorrect, wrongFeedback) {
   }
   showAnswerExplanationCard(state.currentQuestion);
   clearTimeout(state.nextTimer);
-  state.nextTimer = window.setTimeout(() => advanceQuestion(), 5000);
+  state.nextTimer = window.setTimeout(() => advanceQuestion(), 3000);
 }
 
 function handleAnswer(answerIndex) {
@@ -4326,7 +4454,10 @@ async function joinRoomByCode(code) {
 async function openLeaderboard() {
   const medalFor = (pos) => (pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `${pos}.`);
   const localRows = () => {
-    const history = loadHistory().sort((a, b) => b.score - a.score).slice(0, 5);
+    const history = loadHistory()
+      .filter((h) => !isExcludedPlayerName(h.playerName || h.name))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
     return history.length
       ? history.map((h, i) => `<div class="source-item"><strong>${medalFor(i + 1)} ${h.score} ${tr('نقطة', 'pts')}</strong><span>${escapeHtml(h.mode || '')} · ${h.correct || 0} ${tr('إجابة صحيحة', 'correct')}</span></div>`).join('')
       : `<div class="empty-state">${tr('لا نتائج بعد — العب سباقاً لتظهر نتيجتك هنا.', 'No results yet — play a race to appear here.')}</div>`;
@@ -4432,7 +4563,7 @@ function openProfile() {
   `;
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.1', 'Version v1.5.1')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.2', 'Version v1.5.2')}</small></p></div>`,
     'info',
   );
 }
@@ -4476,7 +4607,7 @@ async function linkGmailAccount() {
       return;
     }
     try { sessionStorage.setItem('sibaq-pending-action', 'link-gmail'); } catch (error) { /* ignore */ }
-    const redirectTo = `${location.origin}${location.pathname}`;
+    const redirectTo = getSupabaseRedirectUrl();
     if (supabaseUser && supabaseUser.is_anonymous && client.auth && typeof client.auth.linkIdentity === 'function') {
       try {
         const { error } = await client.auth.linkIdentity({ provider: 'google', options: { redirectTo } });
@@ -4751,9 +4882,13 @@ function bindEvents() {
 }
 
 function boot() {
+  purgeExcludedUserData();
   loadCachedRemoteQuestions();
   validateQuestionBank();
   checkSeasonRolloverOnBoot();
+  if (typeof window !== 'undefined' && window.location && (window.location.hash || window.location.search)) {
+    handleIncomingAuthTokens(window.location.href);
+  }
   refreshSupabaseSession();
   mergeRemoteQuestions();
   const savedTheme = localStorage.getItem('sibaq-theme');

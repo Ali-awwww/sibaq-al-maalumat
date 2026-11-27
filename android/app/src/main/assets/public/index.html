@@ -138,11 +138,11 @@
                 <span class="daily-arrow">›</span>
               </button>
               <div class="home-quick-tools">
-                <button type="button" class="quick-tool-btn kids-toggle-btn" id="kidsToggleBtn" data-action="toggle-kids" aria-pressed="false">🧸 <span id="kidsToggleLabel">وضع الأطفال: إيقاف</span></button>
-                <button type="button" class="quick-tool-btn" id="openQuestsBtn" data-action="open-quests">🎯 <span id="questsMiniText">المهام: 0/3</span></button>
-                <button type="button" class="quick-tool-btn wheel-tool-btn" id="openWheelBtn" data-action="open-wheel">🎡 <span id="wheelMiniText">عجلة الحظ</span></button>
+                <button type="button" class="quick-tool-btn kids-toggle-btn" id="kidsToggleBtn" data-action="toggle-kids" aria-pressed="false"><svg class="inline-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="9" cy="10" r="1.2" fill="currentColor" /><circle cx="15" cy="10" r="1.2" fill="currentColor" /><path d="M9 14.5c1 1.5 5 1.5 6 0" /></svg> <span id="kidsToggleLabel">وضع الأطفال: إيقاف</span></button>
+                <button type="button" class="quick-tool-btn" id="openQuestsBtn" data-action="open-quests"><svg class="inline-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1.5" fill="currentColor" /></svg> <span id="questsMiniText">المهام: 0/3</span></button>
+                <button type="button" class="quick-tool-btn wheel-tool-btn" id="openWheelBtn" data-action="open-wheel"><svg class="inline-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6" /></svg> <span id="wheelMiniText">عجلة الحظ</span></button>
               </div>
-              <button type="button" class="ghost-button apps-btn" data-action="open-our-apps" data-i18n="ourApps">📱 تطبيقاتنا</button>
+              <button type="button" class="ghost-button apps-btn" data-action="open-our-apps" data-i18n="ourApps"><svg class="inline-tool-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" /><circle cx="12" cy="18" r="1" fill="currentColor" /></svg> <span>تطبيقاتنا</span></button>
             </aside>
           </div>
 
@@ -269,7 +269,7 @@
             <button type="button" class="ghost-button" data-action="open-sources" data-i18n="usedSources">المصادر المستخدمة</button>
           </div>
 
-          <footer class="app-version-footer" id="appVersionFooter">سباق المعلومات · v1.5.1</footer>
+          <footer class="app-version-footer" id="appVersionFooter">سباق المعلومات · v1.5.2</footer>
         </section>
 
         <section class="screen campaign-screen" id="campaignScreen" hidden aria-labelledby="campaignTitle">
@@ -337,7 +337,7 @@
               </h1>
             </div>
             <div class="race-chips">
-              <span class="streak-chip">🔥 <span id="raceStreak">0</span></span>
+              <span class="streak-chip"><svg class="inline-chip-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-.5 2.5-2 4.5-4 6-2 1.5-3 4-3 6.5A7 7 0 0 0 12 21.5a7 7 0 0 0 7-7c0-3-2-5.5-4-7.5-.5 2-2 3-3.5 3.5 0-3.5-1.5-6.5-1.5-8.5z" /></svg> <span id="raceStreak">0</span></span>
               <span class="question-chip"><span id="answeredCount">0</span>/<span id="answeredTotal">10</span> <span id="raceCompletedLabel" data-i18n="completedWord">مكتملة</span></span>
             </div>
           </div>
@@ -363,7 +363,15 @@
             </div>
 
             <div class="track-area">
-              <div class="finish-line" aria-hidden="true"><span>🏁</span></div>
+              <div class="finish-line" aria-hidden="true">
+                <span class="finish-flag-wrap">
+                  <svg class="finish-flag-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 21V3c3-1.5 6 0 8-1s5-1 8 0v10c-3-1-6 0-8 1s-5 1-8 0" />
+                    <path d="M4 13c3-1 6 0 8 1s5 1 8 0" />
+                    <path d="M12 2v12" />
+                  </svg>
+                </span>
+              </div>
               <div class="race-lane opponent-lane">
                 <div class="lane-head">
                   <span class="race-avatar bot-avatar" id="opponentAvatar">س</span>
@@ -437,7 +445,16 @@
               </div>
 
               <div class="track-ticks" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                <span class="track-mark"><em>0%</em></span>
+                <span></span>
+                <span></span>
+                <span class="track-mark"><em>25%</em></span>
+                <span></span>
+                <span class="track-mark mid-mark"><em>50%</em></span>
+                <span></span>
+                <span class="track-mark"><em>75%</em></span>
+                <span></span>
+                <span class="track-mark finish-mark"><em>100%</em></span>
               </div>
             </div>
           </div>
@@ -478,9 +495,9 @@
             <div class="booster-area">
               <span class="booster-heading"><em data-i18n="boostersLabel">تعزيزاتك</em> <small data-i18n="oncePerRace">مرة واحدة في كل سباق</small></span>
               <div class="booster-list">
-                <button type="button" class="booster" id="powerSkip" data-action="use-power-skip"><span>↷</span> <em data-i18n="boosterSkip">تخطّ</em> <b class="booster-count" id="powerSkipCount">1</b></button>
-                <button type="button" class="booster" id="powerFreeze" data-action="use-power-freeze"><span>❄️</span> <em data-i18n="boosterFreeze">تجميد</em> <b class="booster-count" id="powerFreezeCount">1</b></button>
-                <button type="button" class="booster" id="powerDouble" data-action="use-power-double"><span>×2</span> <em data-i18n="boosterDouble">مضاعفة</em> <b class="booster-count" id="powerDoubleCount">1</b></button>
+                <button type="button" class="booster" id="powerSkip" data-action="use-power-skip"><svg class="booster-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17V7h4l5-4v18l-5-4H4z" /><path d="M17 9l4 4-4 4" /></svg> <em data-i18n="boosterSkip">تخطّ</em> <b class="booster-count" id="powerSkipCount">1</b></button>
+                <button type="button" class="booster" id="powerFreeze" data-action="use-power-freeze"><svg class="booster-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07M12 6l-2-2m4 0-2 2M12 18l-2 2m4 0-2-2M6 12l-2-2m0 4 2-2M18 12l2-2m0 4-2-2" /></svg> <em data-i18n="boosterFreeze">تجميد</em> <b class="booster-count" id="powerFreezeCount">1</b></button>
+                <button type="button" class="booster" id="powerDouble" data-action="use-power-double"><svg class="booster-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 8 5 8m0-8-5 8" /><path d="M13 11a3 3 0 0 1 5.5-1.5c.5 1-.5 2.5-2.5 4.5h3" /></svg> <em data-i18n="boosterDouble">مضاعفة</em> <b class="booster-count" id="powerDoubleCount">1</b></button>
               </div>
             </div>
             <p class="race-tip" data-i18n="raceTip">أجب قبل الخصم لتحصل على 10 نقاط بدلاً من 5.</p>
@@ -490,7 +507,7 @@
         <section class="screen result-screen" id="resultScreen" hidden aria-labelledby="resultTitle">
           <article class="result-card glass-card">
             <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
-            <span class="result-badge" aria-hidden="true">🏆</span>
+            <span class="result-badge" aria-hidden="true"><svg class="result-trophy-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v6a6 6 0 0 1-12 0V4z" /><path d="M6 6H3a2 2 0 0 0 2 3c1 0 1 0 1-1" /><path d="M18 6h3a2 2 0 0 1-2 3c-1 0-1 0-1-1" /><path d="M12 16v4M8 20h8" /></svg></span>
             <span class="eyebrow" id="resultEyebrow">انتصار ذهبي</span>
             <h1 id="resultTitle">أحسنت!</h1>
             <p id="resultSubtitle">سرعتك صنعت الفارق. واصلت حتى النهاية.</p>
@@ -514,23 +531,23 @@
 
       <nav class="bottom-nav" aria-label="التنقل الرئيسي">
         <button type="button" class="nav-item active" data-action="home" data-nav="home">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9.5a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 20Z" /></svg>
           <span data-i18n="navHome">الرئيسية</span>
         </button>
         <button type="button" class="nav-item" data-action="open-campaign" data-nav="campaign">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 10 5l5 8 5-4-1 10Z" /><circle cx="10" cy="5" r="1.5" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 19 6-3.5 6 3.5 4-2.5V3.5l-4 2.5-6-3.5-6 3.5V19Z" /><path d="M10 3.5v12M16 6v13" /></svg>
           <span data-i18n="modeCampaignTitle">الحملة الفردية</span>
         </button>
         <button type="button" class="nav-main" data-action="start-race" aria-label="ابدأ سباقاً جديداً">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5v13l11-6.5Z" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="7,5 19,12 7,19" /></svg>
           <span data-i18n="navStart">ابدأ</span>
         </button>
         <button type="button" class="nav-item" data-action="open-leaderboard" data-nav="leaderboard">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10" /></svg>
           <span data-i18n="navRanks">الترتيب</span>
         </button>
         <button type="button" class="nav-item" data-action="open-profile" data-nav="profile">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4.5 20.5c1-3.5 4-5.5 7.5-5.5s6.5 2 7.5 5.5" /></svg>
           <span data-i18n="navProfile">ملفي</span>
         </button>
       </nav>

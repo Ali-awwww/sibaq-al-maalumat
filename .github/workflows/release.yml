@@ -1,4 +1,4 @@
-# إصدار v1.5.1: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.5.2: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -74,19 +74,26 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.5.1.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.5.2.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.1.apk
-          ls -lh sibaq-al-maalumat-v1.5.1.apk sibaq-al-maalumat-web-v1.5.1.zip
-      - name: نشر Release v1.5.1
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.2.apk
+          ls -lh sibaq-al-maalumat-v1.5.2.apk sibaq-al-maalumat-web-v1.5.2.zip
+      - name: نشر Release v1.5.2
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          تحديث سباق المعلومات إلى v1.5.1: تحسينات بصرية وأنيميشن غني وشخصيات SVG متحركة على المضمار مع الحفاظ الكامل على منطق اللعبة وبنك الأسئلة.
+          تحديث سباق المعلومات إلى v1.5.2:
+          1) توقف 3 ثوانٍ كاملة بعد الإجابة مع عرض الشرح والتغذية الراجعة قبل التقدم للسؤال التالي.
+          2) إيقاف التمرير التلقائي تماماً بعد الإجابة لبقاء الشاشة ثابتة في مكانها.
+          3) رسوميات وتأثيرات مضمار أغنى بعلامات مسافة وتوهج زمردي/ذهبي وظلال وأجواء احتفالية خفيفة.
+          4) أيقونات خط رفيع أنيقة بأسلوب SF Symbols عبر جميع الشاشات.
+          5) إصلاح حفظ تسجيل الدخول عبر Supabase والتعامل مع روابط وتوكنز الجلسة وتوجيه Capacitor.
+          6) استبعاد وحذف اسم «مؤيد عبدو» من الصدارة والعرض والتخزين المحلي مع إضافة سكريبت الحذف المباشر لقاعدة البيانات.
+          الحفاظ التام على بنك الأسئلة الموثّق (634 سؤالاً) وقواعد اللعبة والوضعين الفاتح والداكن.
           EOF
-          gh release create v1.5.1 \
-            --title "سباق المعلومات v1.5.1" \
+          gh release create v1.5.2 \
+            --title "سباق المعلومات v1.5.2" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.5.1.apk sibaq-al-maalumat-web-v1.5.1.zip
+            sibaq-al-maalumat-v1.5.2.apk sibaq-al-maalumat-web-v1.5.2.zip
             
