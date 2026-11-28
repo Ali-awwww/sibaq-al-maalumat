@@ -1231,7 +1231,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.5.6', 'Knowledge Race · v1.5.6');
+    verFooter.textContent = tr('سباق المعلومات · v1.5.7', 'Knowledge Race · v1.5.7');
   }
   updateHomeStats();
   applyKidsMode();
@@ -4592,7 +4592,7 @@ function openProfile() {
   `;
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="update-section" id="updateSection"><h3>${tr('🔄 التحديثات', '🔄 Updates')}</h3><p>${tr('الإصدار الحالي', 'Current version')}: <b>v1.5.6</b></p><p class="update-status" id="updateStatus"></p><button type="button" class="ghost-button" data-action="check-update">${tr('التحقق من وجود تحديث', 'Check for updates')}</button></div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.6', 'Version v1.5.6')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="update-section" id="updateSection"><h3>${tr('🔄 التحديثات', '🔄 Updates')}</h3><p>${tr('الإصدار الحالي', 'Current version')}: <b>v1.5.7</b></p><p class="update-status" id="updateStatus"></p><button type="button" class="ghost-button" data-action="check-update">${tr('التحقق من وجود تحديث', 'Check for updates')}</button></div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.7', 'Version v1.5.7')}</small></p></div>`,
     'info',
   );
 }
