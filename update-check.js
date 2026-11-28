@@ -7,11 +7,11 @@
   // الإصدار الحالي للتطبيق.
   // ملاحظة: ارفع هذا الثابت مع كل إصدار جديد، ومعه package.json وversionName في android/app/build.gradle.
   // التطبيق لا يستخدم App.getInfo() من @capacitor/app، لذلك يُقرأ الإصدار الحالي من هذا الثابت.
-  var CURRENT_VERSION = '1.5.6';
+  var CURRENT_VERSION = '1.5.7';
 
   var API_URL = 'https://apps-showcase.pages.dev/api/latest';
   var REPO = 'sibaq-al-maalumat';
-  var CHECK_TIMEOUT_MS = 8000;
+  var CHECK_TIMEOUT_MS = 30000;
   var KEY_LAST_CHECK = 'sibaq-update-last-check';
   var KEY_DISMISSED = 'sibaq-update-dismissed';
   var LANG_KEY = 'sibaq-lang-v1';
