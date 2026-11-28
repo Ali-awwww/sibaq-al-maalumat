@@ -1,6 +1,6 @@
 {
   "name": "sibaq-al-maalumat",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "private": true,
   "scripts": {
     "dev": "node server.mjs",
