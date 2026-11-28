@@ -1696,6 +1696,10 @@ svg {
 .opponent-runner .runner-shoe-front { stroke: #fffbeb; stroke-width: 4.2; }
 .opponent-runner .runner-shoe-back { stroke: #fde68a; stroke-width: 4; }
 
+/* وضع الحملة: علامة الهدف 🎯 بدل شكل العدّاء المنافس */ 
+.opponent-runner.goal-marker .runner-anim, .opponent-runner.goal-marker .runner-bubble, .opponent-runner.goal-marker .runner-dust {   display: none; } 
+.opponent-runner.goal-marker::after {   content: '🎯';   bottom: 0;   width: auto;   height: auto;   border-radius: 0;   background: none;   font-size: 44px;   line-height: 1;   z-index: 1; }
+
 /* Continuous Running Cycle (GPU transform & opacity only) */
 .runner-body {
   transform-origin: 32px 38px;

@@ -1166,6 +1166,7 @@ const ui = {
   opponentScore: document.querySelector('#opponentScore'),
   opponentName: document.querySelector('#opponentName'),
   opponentAvatar: document.querySelector('#opponentAvatar'),
+  opponentRoleLabel: document.querySelector('#opponentRoleLabel'),
   raceStreak: document.querySelector('#raceStreak'),
   finalScore: document.querySelector('#finalScore'),
   finalCorrect: document.querySelector('#finalCorrect'),
@@ -1213,6 +1214,8 @@ function applyLanguageToDOM() {
     const key = el.dataset.i18n;
     if (key && dict[key] !== undefined) el.textContent = dict[key];
   });
+  // تسمية صف الخصم تتبع الوضع: «الهدف» في الحملة و«الخصم» في غيرها.
+  if (ui.opponentRoleLabel) ui.opponentRoleLabel.textContent = state.mode === 'campaign' ? tr('الهدف', 'Goal') : tr('الخصم', 'Opponent');
   document.querySelectorAll('[data-i18n-html]').forEach((el) => {
     const key = el.dataset.i18nHtml;
     if (key && dict[key] !== undefined) el.innerHTML = dict[key];
@@ -1228,7 +1231,7 @@ function applyLanguageToDOM() {
   }
   const verFooter = document.getElementById('appVersionFooter');
   if (verFooter) {
-    verFooter.textContent = tr('سباق المعلومات · v1.5.3', 'Knowledge Race · v1.5.3');
+    verFooter.textContent = tr('سباق المعلومات · v1.5.6', 'Knowledge Race · v1.5.6');
   }
   updateHomeStats();
   applyKidsMode();
@@ -3125,6 +3128,10 @@ function resetRaceState() {
   }
   setProgress(ui.playerRunner, 0);
   setProgress(ui.opponentRunner, 0);
+  // في وضع الحملة: الصف الثاني هدف نجاح لا خصماً — تسميته «الهدف» وعلامته 🎯.
+  const isCampaignGoal = state.mode === 'campaign';
+  if (ui.opponentRoleLabel) ui.opponentRoleLabel.textContent = isCampaignGoal ? tr('الهدف', 'Goal') : tr('الخصم', 'Opponent');
+  if (ui.opponentRunner) ui.opponentRunner.classList.toggle('goal-marker', isCampaignGoal);
 }
 
 function getModeQuestionSource() {
@@ -4585,7 +4592,7 @@ function openProfile() {
   `;
   openModal(
     tr('👤 ملف اللاعب واللغة', '👤 Player Profile & Settings'),
-    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.3', 'Version v1.5.3')}</small></p></div>`,
+    `<div class="profile-sheet">${statusBadge}<p><b>${escapeHtml(displayProfileName())}</b> · ${tr('اللقب', 'Title')}: ${title} · ${tr('المستوى', 'Level')} ${level}</p>${kpiGrid}${enCounterBox}${avatarPicker}${companionPicker}${leagueBox}<div class="ach-grid">${ach}</div><div class="update-section" id="updateSection"><h3>${tr('🔄 التحديثات', '🔄 Updates')}</h3><p>${tr('الإصدار الحالي', 'Current version')}: <b>v1.5.6</b></p><p class="update-status" id="updateStatus"></p><button type="button" class="ghost-button" data-action="check-update">${tr('التحقق من وجود تحديث', 'Check for updates')}</button></div><div class="profile-actions">${accountBtn}<button type="button" class="ghost-button" data-action="edit-name">${tr('تعديل الاسم', 'Edit Name')}</button><button type="button" class="ghost-button" data-action="enable-notifications">${tr('تفعيل الإشعارات', 'Enable Notifications')}</button><button type="button" class="ghost-button" data-action="open-our-apps">${tr('📱 تطبيقاتنا', '📱 Our Apps')}</button></div><p class="app-version-footer"><small>${tr('الإصدار v1.5.6', 'Version v1.5.6')}</small></p></div>`,
     'info',
   );
 }
