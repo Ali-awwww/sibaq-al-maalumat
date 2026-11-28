@@ -1,4 +1,4 @@
-# إصدار v1.5.6: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
+# إصدار v1.5.7: بناء APK أندرويد موقّع + حزمة الويب، ونشرهما في Release.
 # يُشغَّل يدوياً؛ يبني الويب (dist) ثم يزامن Capacitor ويبني APK الإصدار
 # موقّعاً بالـ keystore الجديد (من الأسرار)، ويتحقق من سلامة keystore
 # (SHA-256 للملف) ومن بصمة شهادة APK قبل النشر.
@@ -74,23 +74,23 @@ jobs:
       - name: حزم نسخة الويب وتجهيز المرفقات
         run: |
           cd dist
-          zip -r ../sibaq-al-maalumat-web-v1.5.6.zip .
+          zip -r ../sibaq-al-maalumat-web-v1.5.7.zip .
           cd ..
-          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.6.apk
-          ls -lh sibaq-al-maalumat-v1.5.6.apk sibaq-al-maalumat-web-v1.5.6.zip
-      - name: نشر Release v1.5.6
+          cp android/app/build/outputs/apk/release/app-release.apk sibaq-al-maalumat-v1.5.7.apk
+          ls -lh sibaq-al-maalumat-v1.5.7.apk sibaq-al-maalumat-web-v1.5.7.zip
+      - name: نشر Release v1.5.7
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.txt <<'EOF'
-          تحديث سباق المعلومات إلى v1.5.6:
-          - فحص التحديث داخل التطبيق: إشعار عند توفر إصدار جديد مع زر تحديث، وقسم «التحديثات» في ملف اللاعب للتحقق يدوياً.
-          - في وضع الحملة: صف الهدف يعرض «الهدف» وعلامة الهدف على المضمار بدل شكل الخصم.
-          - تصحيح إجابة سؤال غزوة الخندق (كيف انتهت كما وصفها القرآن الكريم): الإجابة الصحيحة هي «بردّ الله الذين كفروا بغيظهم لم ينالوا خيراً» (سورة الأحزاب، الآية 25).
-          - الحفاظ الكامل على كل مميزات v1.5.5، بما فيها بنك الأسئلة (1000 سؤال) وبقاء تسجيل الدخول بـ Google داخل تطبيق أندرويد.
+          تحديث سباق المعلومات إلى v1.5.7:
+          - تصحيح 12 سؤالاً مؤكد الخطأ في بنك الأسئلة: تصحيح إجابات ومراجع في القرآن الكريم والحديث والفقه والسيرة والتاريخ.
+          - إعادة صياغة 12 سؤالاً آخر لتوضيح المطلوب بدقة أكبر.
+          - رفع مهلة التحقق من التحديث من 8 ثوانٍ إلى 30 ثانية، لتفادي فشل الفحص على الاتصالات البطيئة.
+          - الحفاظ الكامل على كل مميزات v1.5.6، بما فيها بنك الأسئلة (1000 سؤال) وبقاء تسجيل الدخول بـ Google داخل تطبيق أندرويد.
           EOF
-          gh release create v1.5.6 \
-            --title "سباق المعلومات v1.5.6" \
+          gh release create v1.5.7 \
+            --title "سباق المعلومات v1.5.7" \
             --notes-file release-notes.txt \
-            sibaq-al-maalumat-v1.5.6.apk sibaq-al-maalumat-web-v1.5.6.zip
+            sibaq-al-maalumat-v1.5.7.apk sibaq-al-maalumat-web-v1.5.7.zip
             
